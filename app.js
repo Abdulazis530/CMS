@@ -4,11 +4,12 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose')
 
-const usersRouter = require('./routes/user');
+
+const usersAuth = require('./routes/auth');
 
 
 const app = express();
-mongoose.connect('mongodb://localhost/c30db', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost/cmsDb', { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -17,6 +18,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/api/users', phonebooksRouter);
+app.use('/api/users', usersAuth);
 
 module.exports = app;
