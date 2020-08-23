@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Data = require('../models/Data')
+const Data = require('../models/DataDate')
 
 
 
@@ -33,7 +33,7 @@ router.post('/search', async (req, res, next) => {
 
 });
 
-// #2 READ  localhost 3000/api/data 
+// #2 READ  localhost 3000/api/datadate
 router.get("/", async (req, res, next) => {
     let response = []
     try {
@@ -53,7 +53,7 @@ router.get("/", async (req, res, next) => {
     }
 })
 
-// #3 EDIT  localhost 3000/api/data/219asdawdaw  
+// #3 EDIT  localhost 3000/api/datadate/219asdawdaw  
 router.put("/:id", async (req, res, next) => {
     const { letter, frequency } = req.body
     const _id = req.params.id
