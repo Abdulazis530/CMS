@@ -106,7 +106,7 @@ describe('users', function () {
     });
   });
 
-  it('should logout when access /api/users/destroy POST', function (done) {
+  it('should logout when access /api/users/destroy GET', function (done) {
     chai
     .request(server)
     .post("/api/users/login")
@@ -132,23 +132,5 @@ describe('users', function () {
         });
     });
   });
-  //   it('should delete a SINGLE phonebook on /api/phonebooks/<id> DELETE', function(done){
-  //     chai.request(server)
-  //     .get('/api/phonebooks')
-  //     .end(function(err, res){
-  //       chai.request(server)
-  //       .delete(`/api/phonebooks/${res.body[0]._id}`)
-  //       .end(function(err, response){
-  //         response.should.have.status(201)
-  //         response.should.be.json;
-  //         response.body.should.be.a('object');
-  //         response.body.should.be.a('object');
-  //         response.body.should.have.property('name');
-  //         response.body.should.have.property('_id');
-  //         response.body.name.should.equal('test');
-  //         done();
-  //       })
-  //     })
-  //   })
 
 })

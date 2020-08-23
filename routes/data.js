@@ -26,7 +26,7 @@ router.post('/search', async (req, res, next) => {
                 frequency:field.frequency   
             }
         })
-        res.status(201).json(response)
+        res.status(200).json(response)
 
     } catch (error) {
         console.log(error)
