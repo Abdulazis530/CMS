@@ -66,7 +66,7 @@ describe('data', () => {
         searchData3.body[0].frequency.should.equal(1.2);
     });
 
-    it('Should list ALL users on /api/data/ GET', async () => {
+    it('Should list ALL data from database /api/data/ GET', async () => {
         const data = await chai.request(server).get('/api/data')
 
         data.should.have.status(200);
@@ -83,7 +83,7 @@ describe('data', () => {
         const data = await chai.request(server).get('/api/data');
         const id = data.body[0]._id;
 
-        const takeEditedData= await chai.request(server).put(`/api/data/${id}`).send({'letter':'C','frequency':12.2});
+        const takeEditedData = await chai.request(server).put(`/api/data/${id}`).send({ 'letter': 'C', 'frequency': 12.2 });
 
         takeEditedData.should.have.status(201);
         takeEditedData.should.be.json;
@@ -97,11 +97,11 @@ describe('data', () => {
         takeEditedData.body.message.should.equal('data have been updated');
         takeEditedData.body.data.letter.should.equal('C');
         takeEditedData.body.data.frequency.should.equal(12.2);
-        
+
     });
 
     it('Should add a data into database when accessing  /api/data/ POST', async () => {
-       const addedData= await chai.request(server).post('/api/data/').send({ 'letter': 'B', 'frequency': 1.3 });
+        const addedData = await chai.request(server).post('/api/data/').send({ 'letter': 'B', 'frequency': 1.3 });
         addedData.should.have.status(201);
         addedData.should.be.json;
         addedData.body.should.have.property('success');
@@ -114,6 +114,25 @@ describe('data', () => {
         addedData.body.message.should.equal('data have been added');
         addedData.body.data.letter.should.equal('B');
         addedData.body.data.frequency.should.equal(1.3);
+    });
+
+    it('Should Delete a specific data with id from database when accessing  /api/data/id DELETE', async () => {
+        const addedData = await chai.request(server).post('/api/data/').send({ 'letter': 'B', 'frequency': 1.3 });
+        const id= addedData.body.data._id
+        
+        const delData= await chai.request(server).delete(`/api/data/${id}`)
+        delData.should.have.status(200);
+        delData.should.be.json;
+        delData.body.should.have.property('success');
+        delData.body.should.have.property('message');
+        delData.body.should.have.property('data');
+        delData.body.data.should.have.property('_id');
+        delData.body.data.should.have.property('letter');
+        delData.body.data.should.have.property('frequency');
+        delData.body.success.should.equal(true);
+        delData.body.message.should.equal('data have been deleted');
+        delData.body.data.letter.should.equal('B');
+        delData.body.data.frequency.should.equal(1.3);
     });
 
 })

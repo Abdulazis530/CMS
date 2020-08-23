@@ -104,15 +104,15 @@ router.post('/', async (req, res, next) => {
 });
 // #5 DELETE  localhost 3000/api/data/219asdawdaw  
 router.delete("/:id", async (req, res, next) => {
-    const id = req.params.id
+    const _id = req.params.id
     try {
-        const data = await Data.findByIdAndRemove(id)
+        const data = await Data.findByIdAndRemove(_id)
         if (!data) return res.status(500).json(response)
         const { letter, frequency } = data
         response.success = true
         response.message = "data have been deleted"
-        response.data = { id, letter, frequency }
-        res.status(201).json(response)
+        response.data = { _id, letter, frequency }
+        res.status(200).json(response)
     } catch (error) {
         console.log(error)
         res.status(400).json(response)
@@ -125,6 +125,7 @@ router.get("/:id", async (req, res, next) => {
     const _id = req.params.id
     try {
         const data = await Data.findOne({_id})
+        console.log(data)
         if (!data) return res.status(500).json(response)
         const { letter, frequency } = data
         response.success = true
