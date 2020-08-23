@@ -58,17 +58,17 @@ router.get("/", async (req, res, next) => {
 // #3 EDIT  localhost 3000/api/data/219asdawdaw  
 router.put("/:id", async (req, res, next) => {
     const { letter, frequency } = req.body
-    const id = req.params.id
+    const _id = req.params.id
     try {
         const data = await Data.findByIdAndUpdate(
-            id,
+            _id,
             { letter, frequency },
             { new: true }
         )
         if (!data) return res.status(500).json(response)
         response.success = true
         response.message = "data have been updated"
-        response.data = { id, letter, frequency }
+        response.data = { _id, letter, frequency }
         res.status(201).json(response)
     } catch (error) {
         console.log(error)
