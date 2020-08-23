@@ -9,15 +9,10 @@ const secret = process.env.TOKEN_SECRET
 
 
 /* GET users listing. */
-let response = { data: {}, token: null, message: "" }
-const makeResponse = (email, message, token) => {
-  response.data.email = email
-  response.message = message
-  response.token = token
-}
+
 
 router.get('/list', async (req, res) => {
-  response = []
+  let response = []
   try {
     const result = await User.find({})
     response = result.map(item => {
@@ -35,44 +30,65 @@ router.get('/list', async (req, res) => {
 })
 
 router.post('/register', async (req, res, next) => {
+  let response = { data: {}, token: null, message: "" }
   const { email, password, retypepassword } = req.body
   if (password === retypepassword) {
     try {
       const emailDb = await User.findOne({ email })
+      console.log(emailDb)
       if (emailDb) {
-        response = { data: {}, token: null, message: "" }
         response.message = `email already exists`
         return res.status(400).json(response)
       }
       const token = jwt.sign({ email }, secret)
       const newUser = new User({ email, password, token })
       await newUser.save()
-      makeResponse(email, "register success", token)
+      console.log(email)
+      response.data = { email }
+      response.message = 'register success'
+      response.token = token
       res.status(201).json(response)
     } catch (error) {
       console.log(error)
-      res.status(400).json(response)
+      res.status(500).json(response)
     }
   } else {
     response.message = "email or password wrong"
-    res.status(500).json(response)
+    res.status(400).json(response)
   }
 });
 
 router.post('/login', async (req, res, next) => {
+  let response = { data: {}, token: null, message: "" }
   const { email, password } = req.body
   try {
     const user = await User.findOne({ email })
     if (!user) {
-      response = { data: {}, token: null, message: "" }
       response.message = 'email or password wrong'
-      return res.status(400).json(response)
+      return res.status(200).json(response)
     }
     const check = await bcrypt.compare(password, user.password)
     if (check) {
-      console.log(user.token)
-      makeResponse(email, "login success", user.token)
-      res.status(201).json(response)
+      if (user.token) {
+        response.data.email = email
+        response.message = "login success"
+        response.token = user.token
+        res.status(201).json(response)
+      } else {
+        const newToken = jwt.sign({ email}, secret)
+        const updateUser = await User.updateOne({ email: user.email }, { token: newToken })
+        response.data.email = email
+        response.message = "login success"
+        response.token = newToken
+        res.status(201).json(response)
+
+        if (!updateUser) {
+          response.message = "update token failed"
+          return res.status(500).json(response)
+        }
+
+      }
+
     } else {
       response.message = 'email or password wrong'
       res.status(400).json(response)
@@ -86,32 +102,56 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.post('/check', async (req, res, next) => {
-  const token = req.header("token")
-
+  const token = req.header("Authorization")
   let response = {
     valid: false
   };
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, secret);
-      if (!decoded) return res.status(200).json(response)
-      const user = await User.findOne({ email: decoded.email })
-      if (!user) return res.status(200).json(response)
-      response.valid = true
-      res.status(200).json(response)
 
-    } catch (error) {
-      console.log(error)
-      res.status(200).json(response)
-    }
-  } else {
+  try {
+    const decoded = jwt.verify(token, secret);
+    console.log(decoded)
+    if (!decoded) return res.status(400).json(response)
+    const user = await User.findOne({ email: decoded.email })
+    if (!user) return res.status(400).json(response)
+    response.valid = true
+    res.status(200).json(response)
+
+  } catch (error) {
+    console.log("wkwkwkwkkkkkkkk")
+    console.log(error)
     res.status(500).json(response)
   }
 
 });
 
+// router.post('/check', function (req, res, next) {
+//   let token = req.header('Authorization');
+//   let response = {
+//     valid: false
+//   };
+
+//   if (typeof token !== undefined) {
+//     const decoded = jwt.verify(token, secret);
+//     Users.find({ email: decoded.email })
+//       .then(result => {
+//         if (result) {
+//           response.valid = true;
+//           res.status(200).json(response);
+//         } else {
+//           res.status(500).json(response);
+//         }
+//       })
+//       .catch(err => {
+//         res.status(500).json(response);
+//       })
+//   } else {
+//     res.status(500).json(response);
+//   }
+// })
+
+
 router.get('/destroy', async (req, res, next) => {
-  const token = req.header("token")
+  const token = req.header("Authorization")
   let response = {
     logout: false
   };
@@ -129,7 +169,7 @@ router.get('/destroy', async (req, res, next) => {
       })
       if (!update) return res.status(500).json(response)
 
-      response.logout=true
+      response.logout = true
       res.status(200).json(response)
 
     } catch (error) {

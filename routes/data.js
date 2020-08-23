@@ -80,7 +80,6 @@ router.put("/:id", async (req, res, next) => {
 // #4 ADD  localhost 3000/api/data 
 router.post('/', async (req, res, next) => {
     const { letter, frequency } = req.body
-
     try {
         const data = new Data({
             letter,
@@ -95,6 +94,7 @@ router.post('/', async (req, res, next) => {
             frequency
         }
         res.status(201).json(response)
+        
 
     } catch (error) {
         console.log(error)
