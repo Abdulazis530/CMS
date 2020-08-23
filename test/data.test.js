@@ -135,4 +135,25 @@ describe('data', () => {
         delData.body.data.frequency.should.equal(1.3);
     });
 
+    it('Should find a specific data with id from database when accessing  /api/data/id GET', async () => {
+        const data = await chai.request(server).get('/api/data');
+        const id = data.body[0]._id;
+      
+        
+        const getData= await chai.request(server).get(`/api/data/${id}`)
+       
+        getData.should.have.status(200);
+        getData.should.be.json;
+        getData.body.should.have.property('success');
+        getData.body.should.have.property('message');
+        getData.body.should.have.property('data');
+        getData.body.data.should.have.property('_id');
+        getData.body.data.should.have.property('letter');
+        getData.body.data.should.have.property('frequency');
+        getData.body.success.should.equal(true);
+        getData.body.message.should.equal('data found');
+        getData.body.data.letter.should.equal('A');
+        getData.body.data.frequency.should.equal(1.2);
+    });
+
 })

@@ -126,12 +126,12 @@ router.get("/:id", async (req, res, next) => {
     try {
         const data = await Data.findOne({_id})
         console.log(data)
-        if (!data) return res.status(500).json(response)
+        if (!data) return res.status(400).json(response)
         const { letter, frequency } = data
         response.success = true
         response.message = "data found"
         response.data = { _id, letter, frequency }
-        res.status(201).json(response)
+        res.status(200).json(response)
     } catch (error) {
         console.log(error)
         res.status(400).json(response)
