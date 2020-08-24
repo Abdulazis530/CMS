@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 const usersAuth = require('./routes/auth');
 const data = require('./routes/data');
 const dataDate = require('./routes/dataDate');
+const maps = require('./routes/maps');
 
 
 const app = express();
@@ -23,5 +24,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/users', usersAuth);
 app.use('/api/data', data);
 app.use('/api/datadate', dataDate);
+app.use('/api/maps', maps);
 
 module.exports = app;

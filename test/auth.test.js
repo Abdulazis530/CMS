@@ -8,7 +8,7 @@ const User = require('../models/User')
 const should = chai.should()
 chai.use(chaiHTTP)
 
-describe('users', () => {
+describe('>>>TESTING AUTHENTICATION AND AUTHORIZATION OF AUTH.USERS API<<<', () => {
   User.collection.drop();
 
   beforeEach(async () => {
