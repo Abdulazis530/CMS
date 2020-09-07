@@ -12,6 +12,7 @@ const secret = process.env.TOKEN_SECRET
 
 
 router.get('/list', async (req, res) => {
+
   let response = []
   try {
     const result = await User.find({})
