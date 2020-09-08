@@ -3,24 +3,35 @@
     <Navbar></Navbar>
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
-      <div class="card mb-3 ">
+      <div class="card mb-3">
         <div class="card-header">Login to CMS</div>
         <div class="card-body text-dark">
-          <form class="d-flex flex-column align-items-center" >
-            <div class="p-2 bd-highligh w-50">
-              <label class=" text-white">Email</label>
-              <input class="form-control form-control-lg" type="Email" placeholder="Email"  required/>
+          <form class="d-flex mt-5 mb-5 flex-column align-items-center">
+            <div class="flexChild d-flex flex-column p-2 bd-highlight w-50">
+              <div class="p-3 mb-4">
+                <label class="text-white font-weight-bold">Email</label>
+                <input
+                  class="form-control form-control-lg"
+                  type="Email"
+                  placeholder="Email"
+                  required
+                />
+              </div>
+              <div class="p-3 mb-4">
+                <label class="text-white font-weight-bold">Password</label>
+                <input
+                  class="form-control form-control-lg"
+                  type="Password"
+                  placeholder="Password"
+                  required
+                />
+              </div>
             </div>
-             <div class="p-2 bd-highligh w-50">
-              <label class=" text-white">Password</label>
-              <input class="form-control form-control-lg" type="Password" placeholder="Password"  required/>
-            </div>
-          
-            
           </form>
 
-          <div class="d-flex flex-row mt-5 bd-highlight justify-content-center text-black-50">
-            <router-link to="/Login" class="flexChild p-2 ml-2 btn btn-success w-25">Login</router-link>
+          <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
+            <button to="/Login" class="btn-login p-2 mb-2 ml-2 btn btn-success w-25">Login</button>
+            <span class="p-2 text-white font-weight-bold lead">Don't have an account?<a> Sign Up</a> </span>
           </div>
         </div>
       </div>
@@ -111,7 +122,18 @@ export default {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 .flexChild:hover {
-  background-color: rgba(83, 192, 140, 0.6);
+  background-color: rgba(0, 0, 0, 0.6);
+  transform: scale(1.02);
+}
+.btn-login {
+  transition: transform 0.2s;
+  font-size: 1.5em;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
+  font-weight: bold;
+  border: none;
+}
+.btn-login:hover {
+  background-color: coral;
   transform: scale(1.02);
 }
 /* 53C08C */
