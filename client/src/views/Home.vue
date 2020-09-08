@@ -1,19 +1,28 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-
+  <div class="home" v-if="seen">
+    <firstView msg="this is message" />
+    
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import firstView from "@/components/index.vue";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    HelloWorld
-  }
-}
+    firstView,
+  },
+  data: function () {
+    return {
+      seen: true,
+      todos: [
+        { text: "Learn JavaScript" },
+        { text: "Learn Vue" },
+        { text: "Build something awesome" },
+      ],
+    };
+  },
+};
 </script>
