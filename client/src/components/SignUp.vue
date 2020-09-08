@@ -4,7 +4,7 @@
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3">
-        <div class="card-header">Login to CMS</div>
+        <div class="card-header">Create New Account</div>
         <div class="card-body text-dark">
           <form class="d-flex mt-5 mb-5 flex-column align-items-center">
             <div class="flexChild d-flex flex-column p-2 bd-highlight w-50">
@@ -26,15 +26,21 @@
                   required
                 />
               </div>
+                <div class="p-3 mb-4">
+                <label class="text-white font-weight-bold">Re-type Password</label>
+                <input
+                  class="form-control form-control-lg"
+                  type="Password"
+                  placeholder="Re-type Password"
+                  required
+                />
+              </div>
             </div>
           </form>
+          
 
           <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
-            <button type="submit" class="btn-login p-2 mb-2 ml-2 btn btn-success w-25">Login</button>
-            <span class="p-2 text-white font-weight-bold lead">
-              Don't have an account?
-              <router-link to="/signup">Sign Up</router-link>
-            </span>
+            <button type="submit" class="btn-login p-2 mb-2 ml-2 btn btn-success w-25">Sign up</button>
           </div>
         </div>
       </div>
@@ -46,7 +52,7 @@
 <script>
 import Navbar from "./Navbar";
 export default {
-  name: "login",
+  name: "SignUp",
   components: {
     Navbar,
   },
