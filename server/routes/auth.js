@@ -42,6 +42,8 @@ router.post('/register', async (req, res, next) => {
         return res.status(400).json(response)
       }
       const token = jwt.sign({ email }, secret)
+      console.log(secret)
+      console.log(token)
       const newUser = new User({ email, password, token })
       await newUser.save()
       console.log(email)
@@ -60,8 +62,11 @@ router.post('/register', async (req, res, next) => {
 });
 
 router.post('/login', async (req, res, next) => {
+  
   let response = { data: {}, token: null, message: "" }
   const { email, password } = req.body
+  console.log(email)
+  console.log(password)
   try {
     const user = await User.findOne({ email })
     if (!user) {

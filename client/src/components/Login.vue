@@ -1,41 +1,44 @@
 <template>
   <div>
-    <Navbar></Navbar>
+    <Navbar :isLoggedIn="isLoggedIn"></Navbar>
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3">
         <div class="card-header">Login to CMS</div>
         <div class="card-body text-dark">
-          <form class="flexCustom flexlogin d-flex mt-5 mb-5 flex-column align-items-center">
-           
+          <form method="POST">
+            <div class="flexCustom flexlogin d-flex mt-5 mb-5 flex-column align-items-center">
               <div class="p-4 mb-4 w-50">
-                <label class="text-white font-weight-bold">Email</label>
+                <label for="inputEmail" class="text-white font-weight-bold">Email</label>
                 <input
-                  class="form-control form-control-lg "
+                  class="form-control form-control-lg"
                   type="Email"
-                  placeholder="Email"
+                  placeholder="Email Address"
+                  id="inputEmail"
+                  v-model="email"
                   required
                 />
               </div>
               <div class="p-4 mb-4 w-50">
-                <label class="text-white font-weight-bold">Password</label>
+                <label id="inputPassword" class="text-white font-weight-bold">Password</label>
                 <input
                   class="form-control form-control-lg"
                   type="Password"
                   placeholder="Password"
+                  v-model="password"
                   required
                 />
               </div>
+            </div>
 
+            <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
+              <button type="submit" class="btn-login p-2 mb-2" @click="handleLogin">Login</button>
+              <span class="p-2 text-white font-weight-bold lead">
+                Don't have an account?
+                <router-link to="/signup">Sign Up</router-link>
+              </span>
+            </div>
           </form>
-
-          <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
-            <button type="submit" class="btn-login p-2 mb-2 ">Login</button>
-            <span class="p-2 text-white font-weight-bold lead">
-              Don't have an account?
-              <router-link to="/signup">Sign Up</router-link>
-            </span>
-          </div>
         </div>
       </div>
     </div>
@@ -49,6 +52,57 @@ export default {
   name: "login",
   components: {
     Navbar,
+  },
+  data() {
+    return {
+      email: "",
+      password: "",
+      isLoggedIn: false,
+      url: "http://localhost:3000/api/users/",
+    };
+  },
+  methods: {
+    async handleLogin(e) {
+      e.preventDefault();
+      try {
+        const {
+          data: {
+            token,
+            data: { email },
+          },
+        } = await this.axios.post(`${this.url}login`, {
+          email: this.email,
+          password: this.password,
+        });
+        if (!token) {
+          this.$swal({
+            title: "Email or Password Wrong!",
+            text: "Try again",
+            icon: "error",
+            timer: 1200,
+          });
+        }
+        if (token) {
+          this.$router.push("/home");
+          this.$swal({
+            icon: "success",
+            title: "Login success",
+            showConfirmButton: false,
+            timer: 1200,
+          });
+          localStorage.setItem("Authorization", token);
+          localStorage.setItem("email", email);
+        }
+      } catch (error) {
+        console.log(error);
+        this.$swal({
+          title: "Something when wrong!",
+          text: "status 500, call your administration",
+          icon: "error",
+          timer: 1200,
+        });
+      }
+    },
   },
 };
 </script>
@@ -72,7 +126,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);
 }
-
 
 .flexCustom {
   transition: transform 0.2s;
@@ -143,6 +196,7 @@ export default {
   background-color: coral;
   transform: scale(1.02);
 }
+
 /* 53C08C */
 .flexCustom1 {
   background-color: red;

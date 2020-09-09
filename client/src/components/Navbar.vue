@@ -29,15 +29,20 @@
           <router-link to="/home" class="nav-link">Maps</router-link>
         </li>
       </ul>
-      <button type="submit" class="btn-login p-2 mb-2">Logout</button>
+      <button type="submit" class="btn-login p-2 mb-2" v-if="isLogedIn">Logout</button>
+     
     </div>
   </nav>
 </template>
 <script>
 export default {
+  props:{
+    isLogedIn:Boolean
+  },
   data() {
     return {};
   },
+ 
 };
 </script>
 
