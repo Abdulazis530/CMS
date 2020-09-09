@@ -1,50 +1,42 @@
 <template>
   <div>
-    <Navbar></Navbar>
+    <Navbar :isLoggedIn="isLoggedIn"></Navbar>
 
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3 justify-content-center w-75">
-        <div class="card-header">Welcome to Dashboard
-            <br/>
-            <span class="lead text-dark-50">Select Feature </span>
+        <div class="card-header">
+          Welcome {{user}}
+          <br />
+          <span class="lead text-dark-50 font-weight-bolder ">Select Feature</span>
         </div>
         <div class="card-body text-dark">
           <div class="d-flex flex-column bd-highlight">
-            <a class="childTomato p-1 bd-highlight">
-              <i class="fas fa-signal fa-sm"></i>
+
+            <router-link to="/data" class="childTomato p-1 bd-highlight">
+              <i class="fas fa-database fa-sm"></i>
               <br />
               <span>
-                <strong>Line</strong>
+                <strong>Data</strong>
               </span>
-            </a>
+            </router-link>
 
-            <a class="childYellow p-1 mt-2 bd-highlight">
-              <i class="fas fa-chart-pie fa-sm"></i>
+            <router-link to="/dataDate" class="childYellow p-1 mt-2 bd-highlight">
+              <i class="fas fa-clock fa-sm"></i>
               <br />
               <span>
-                <strong>Pie</strong>
+                <strong>Date Data</strong>
               </span>
-            </a>
+            </router-link>
 
-            <a class="childAqua p-1 mt-2 bd-highlight">
-              <i class="far fa-chart-bar fa-sm"></i>
-              <br />
-              <span>
-                <strong>Bar</strong>
-              </span>
-            </a>
-
-            <a class="childGreen p-1 mt-2 mb-3 bd-highlight">
+            <router-link to="/maps" class="childGreen p-1 mt-2 mb-3 bd-highlight">
               <i class="fas fa-map-marked-alt fa-sm"></i>
               <br />
               <span>
                 <strong>Maps</strong>
               </span>
-            </a>
+            </router-link>
           </div>
-
-
         </div>
       </div>
     </div>
@@ -58,6 +50,12 @@ import Navbar from "./Navbar.vue";
 export default {
   name: "Home",
   components: { Navbar },
+  data() {
+    return {
+      user:localStorage.getItem('email'),
+      isLoggedIn: true,
+    };
+  },
 };
 </script>
 

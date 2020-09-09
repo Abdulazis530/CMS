@@ -6,7 +6,7 @@
       <div class="card mb-3">
         <div class="card-header">Login to CMS</div>
         <div class="card-body text-dark">
-          <form method="POST">
+          <form>
             <div class="flexCustom flexlogin d-flex mt-5 mb-5 flex-column align-items-center">
               <div class="p-4 mb-4 w-50">
                 <label for="inputEmail" class="text-white font-weight-bold">Email</label>
@@ -20,12 +20,13 @@
                 />
               </div>
               <div class="p-4 mb-4 w-50">
-                <label id="inputPassword" class="text-white font-weight-bold">Password</label>
+                <label for="inputPassword" class="text-white font-weight-bold">Password</label>
                 <input
                   class="form-control form-control-lg"
                   type="Password"
                   placeholder="Password"
                   v-model="password"
+                  id="inputPassword"
                   required
                 />
               </div>
@@ -65,33 +66,43 @@ export default {
     async handleLogin(e) {
       e.preventDefault();
       try {
-        const {
-          data: {
-            token,
-            data: { email },
-          },
-        } = await this.axios.post(`${this.url}login`, {
-          email: this.email,
-          password: this.password,
-        });
-        if (!token) {
+        if (this.email.length === 0 || this.password.length === 0) {
           this.$swal({
-            title: "Email or Password Wrong!",
+            title: "Input cannot be empty!",
             text: "Try again",
-            icon: "error",
+            icon: "warning",
             timer: 1200,
           });
-        }
-        if (token) {
-          this.$router.push("/home");
-          this.$swal({
-            icon: "success",
-            title: "Login success",
-            showConfirmButton: false,
-            timer: 1200,
+        } else {
+          const {
+            data: {
+              token,
+              data: { email },
+            },
+          } = await this.axios.post(`${this.url}login`, {
+            email: this.email,
+            password: this.password,
           });
-          localStorage.setItem("Authorization", token);
-          localStorage.setItem("email", email);
+          if (!token) {
+            this.$swal({
+              title: "Email or Password Wrong!",
+              text: "Try again",
+              icon: "error",
+              timer: 1200,
+            });
+          }
+          if (token) {
+            this.$router.push("/home");
+            this.$swal({
+              icon: "success",
+              title: "Login success",
+              showConfirmButton: false,
+              timer: 1200,
+            });
+            localStorage.setItem("Authorization", token);
+            localStorage.setItem("email", email);
+            console.log("ini", localStorage.getItem("Authorization"));
+          }
         }
       } catch (error) {
         console.log(error);

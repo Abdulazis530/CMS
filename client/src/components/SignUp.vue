@@ -1,46 +1,55 @@
 <template>
   <div>
-    <Navbar></Navbar>
+    <Navbar :isLoggedIn="isLoggedIn"></Navbar>
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3">
         <div class="card-header">Create Account</div>
         <div class="card-body text-dark">
-          <form class="flexCustom flexlogin d-flex mt-5 mb-5 flex-column align-items-center">
-           
+          <form>
+            <div class="flexCustom flexlogin d-flex mt-5 mb-5 flex-column align-items-center">
               <div class="p-4 w-50">
-                <label class="text-white font-weight-bold">Email</label>
+                <label for="inputEmail" class="text-white font-weight-bold">Email</label>
                 <input
-                  class="form-control form-control-lg "
+                  class="form-control form-control-lg"
                   type="Email"
-                  placeholder="Email"
+                  placeholder="Email Address"
+                  id="inputEmail"
+                  v-model="email"
                   required
                 />
               </div>
               <div class="p-4 w-50">
-                <label class="text-white font-weight-bold">Password</label>
+                <label for="inputPassword" class="text-white font-weight-bold">Password</label>
                 <input
                   class="form-control form-control-lg"
                   type="Password"
                   placeholder="Password"
+                  id="inputPassword"
+                  v-model="password"
                   required
                 />
               </div>
               <div class="p-4 mb-4 w-50">
-                <label class="text-white font-weight-bold">Confirm Password</label>
+                <label
+                  for="inputConfirmPassword"
+                  class="text-white font-weight-bold"
+                >Confirm Password</label>
                 <input
                   class="form-control form-control-lg"
                   type="Password"
                   placeholder="Confirm Password"
+                  id="inputConfirmPassword"
+                  v-model="retypepassword"
                   required
                 />
               </div>
+            </div>
 
+            <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
+              <button type="submit" class="btn-login p-2 mb-2" @click="handleSignup">Sign Up</button>
+            </div>
           </form>
-
-          <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
-            <button type="submit" class="btn-login p-2 mb-2 ">Sign Up</button>
-          </div>
         </div>
       </div>
     </div>
@@ -54,6 +63,84 @@ export default {
   name: "signup",
   components: {
     Navbar,
+  },
+  data() {
+    return {
+      email: "",
+      password: "",
+      retypepassword: "",
+      isLoggedIn: false,
+      url: "http://localhost:3000/api/users/",
+    };
+  },
+  methods: {
+    async handleSignup(e) {
+      e.preventDefault();
+      try {
+
+        if (
+          this.email.length === 0 ||
+          this.password.length === 0 ||
+          this.retypepassword.length === 0
+        ) {
+          this.$swal({
+            title: "Input cannot be empty!",
+            text: "Try again",
+            icon: "warning",
+            timer: 1200,
+          });
+        } else if(this.password !==this.retypepassword){
+           this.$swal({
+            title: "Password and password confirmation didn't match!",
+            text: "Try again",
+            icon: "warning",
+            timer: 1200,
+          });
+        }
+        else{
+
+          const {
+            data: {
+              token,
+              data: { email },
+              message,
+            },
+          } = await this.axios.post(`${this.url}register`, {
+            email: this.email,
+            password: this.password,
+            retypepassword: this.retypepassword,
+          });
+          if (message == "email already exists") {
+            this.$swal({
+              title: message,
+              text: "Try again",
+              icon: "warning",
+              timer: 1200,
+            });
+          }
+          if (token) {
+            this.$router.push("/home");
+            this.$swal({
+              icon: "success",
+              title: "signup success",
+              showConfirmButton: false,
+              timer: 1200,
+            });
+            localStorage.setItem("Authorization", token);
+            localStorage.setItem("email", email);
+            console.log("ini", localStorage.getItem("Authorization"));
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        this.$swal({
+          title: "Something when wrong!",
+          text: "status 500, call your administrator to fix the issue!",
+          icon: "error",
+          timer: 1200,
+        });
+      }
+    },
   },
 };
 </script>
@@ -77,7 +164,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);
 }
-
 
 .flexCustom {
   transition: transform 0.2s;

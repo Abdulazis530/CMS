@@ -39,7 +39,7 @@
               </span>
             </router-link>
 
-            <router-link to="/maps"  class="childGreen p-1 mt-2 bd-highlight">
+            <router-link to="/map"  class="childGreen p-1 mt-2 bd-highlight">
               <i class="fas fa-map-marked-alt fa-sm"></i>
               <br />
               <span>

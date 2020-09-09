@@ -36,23 +36,18 @@ router.post('/register', async (req, res, next) => {
   if (password === retypepassword) {
     try {
       const emailDb = await User.findOne({ email })
-      console.log(emailDb)
       if (emailDb) {
         response.message = `email already exists`
-        return res.status(400).json(response)
+        return res.status(200).json(response)
       }
       const token = jwt.sign({ email }, secret)
-      console.log(secret)
-      console.log(token)
       const newUser = new User({ email, password, token })
       await newUser.save()
-      console.log(email)
       response.data = { email }
       response.message = 'register success'
       response.token = token
       res.status(201).json(response)
     } catch (error) {
-      console.log(error)
       res.status(500).json(response)
     }
   } else {

@@ -29,20 +29,18 @@
           <router-link to="/home" class="nav-link">Maps</router-link>
         </li>
       </ul>
-      <button type="submit" class="btn-login p-2 mb-2" v-if="isLogedIn">Logout</button>
-     
+      <button type="submit" class="btn-login p-2 mb-2" v-if="isLoggedIn">Logout</button>
     </div>
   </nav>
 </template>
 <script>
 export default {
-  props:{
-    isLogedIn:Boolean
+  props: {
+    isLoggedIn: Boolean,
   },
   data() {
     return {};
   },
- 
 };
 </script>
 
@@ -51,7 +49,6 @@ export default {
   color: white;
   border-radius: 5px;
   background-color: black;
-  width: 10%;
   transition: transform 0.2s;
   font-size: 1.5em;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
