@@ -32,7 +32,8 @@
               </div>
             </div>
           </div>
-          <div class="card-custom card mb-3">
+          <transition name="slide-fade">
+          <div class="card-custom card mb-3" v-if="togle">
             <div class="card-body text-dark">
               <div>
                 <div class="card-header mt-2">ADD DATA</div>
@@ -64,10 +65,13 @@
               <div
                 class="d-flex mt-2 mb-3 text-black-50 flex-row bd-highlight justify-content-center"
               >
-                <button type="button" class="btn-login p-2" @click="handleTogle">Add Data</button>
+                <button type="button" class="btn-togle-add p-2 text-white" @click="handleTogle"><i class="far fa-plus-square mr-1"></i>Save</button>
+                <button type="button" class="btn-togle-cancel p-2 ml-2 text-white" @click="togle=!togle"><i class=" far fa-times-circle mr-1"></i>Cancel</button>
+                
               </div>
             </div>
           </div>
+            </transition>
           <table class="table table-striped font-weight-bold text-black-50">
             <thead>
               <tr>
@@ -94,7 +98,7 @@
             </tbody>
           </table>
           <div class="d-flex mt-5 mb-5 text-black-50 flex-row bd-highlight justify-content-center">
-            <button type="button" class="btn-login p-2 mb-2" @click="handleTogle">Add Data</button>
+            <button type="button" class="btn-togle-add p-2 mb-2" @click="togle=!togle">Add Data</button>
           </div>
         </div>
       </div>
@@ -144,13 +148,14 @@ export default {
       letter: "",
       frequency: "",
       url: "http://localhost:3000/api/data/",
-      items: [],
-      isAdded: false,
+      togle:false,
+      items:[]
     };
   },
   asyncComputed: {
     async loadData() {
       const { data } = await this.axios.get(this.url);
+      this.items=[...data]
       return data;
     },
   },
@@ -199,7 +204,7 @@ export default {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
-.btn-login {
+.btn-togle-add,.btn-togle-cancel {
   border-radius: 5px;
   background-color: rgb(50, 137, 219);
   width: 15%;
@@ -209,6 +214,15 @@ export default {
   font-weight: bold;
   border: none;
 }
+.btn-togle-cancel{
+  background-color: rgb(192, 145, 17);
+}
+.btn-togle-add:hover,
+.btn-togle-cancel:hover {
+  background-color: coral;
+  transform: scale(1.02);
+}
+
 .btn-form-delete,
 .btn-form-edit {
   border-radius: 5px;
@@ -240,10 +254,7 @@ export default {
   background-color: rgba(139, 14, 14, 0.6);
   transform: scale(1.02);
 }
-.btn-login:hover {
-  background-color: coral;
-  transform: scale(1.02);
-}
+
 
 /* 53C08C */
 .container-card {
@@ -265,5 +276,17 @@ a {
 }
 a:hover {
   color: white;
+}
+
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .3s ease
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>
