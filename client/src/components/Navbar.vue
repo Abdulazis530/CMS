@@ -14,20 +14,22 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">
-            Home
-            <span class="sr-only">(current)</span>
-          </a>
+      <ul class="navbar-nav mr-auto p-3 lead">
+        <li class="nav-item">
+          <router-link to="/home" class="nav-link">Home</router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link to="/home" class="nav-link">Data</router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
+          <router-link to="/home" class="nav-link">Data Date</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/home" class="nav-link">Maps</router-link>
         </li>
       </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+      <button type="submit" class="btn-login p-2 mb-2">Logout</button>
     </div>
   </nav>
 </template>
@@ -38,3 +40,22 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.btn-login {
+  color: white;
+  border-radius: 5px;
+  background-color: black;
+  width: 10%;
+  transition: transform 0.2s;
+  font-size: 1.5em;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
+  font-weight: bold;
+  border: none;
+}
+.btn-login:hover {
+  color: black;
+  background-color: white;
+  transform: scale(1.02);
+}
+</style>

@@ -6,18 +6,18 @@
       <div class="card mb-3">
         <div class="card-header">Login to CMS</div>
         <div class="card-body text-dark">
-          <form class="d-flex mt-5 mb-5 flex-column align-items-center">
-            <div class="flexChild d-flex flex-column p-2 bd-highlight w-50">
-              <div class="p-3 mb-4">
+          <form class="flexCustom flexlogin d-flex mt-5 mb-5 flex-column align-items-center">
+           
+              <div class="p-4 mb-4 w-50">
                 <label class="text-white font-weight-bold">Email</label>
                 <input
-                  class="form-control form-control-lg"
+                  class="form-control form-control-lg "
                   type="Email"
                   placeholder="Email"
                   required
                 />
               </div>
-              <div class="p-3 mb-4">
+              <div class="p-4 mb-4 w-50">
                 <label class="text-white font-weight-bold">Password</label>
                 <input
                   class="form-control form-control-lg"
@@ -26,11 +26,11 @@
                   required
                 />
               </div>
-            </div>
+
           </form>
 
           <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
-            <button type="submit" class="btn-login p-2 mb-2 ml-2 btn btn-success w-25">Login</button>
+            <button type="submit" class="btn-login p-2 mb-2 ">Login</button>
             <span class="p-2 text-white font-weight-bold lead">
               Don't have an account?
               <router-link to="/signup">Sign Up</router-link>
@@ -71,9 +71,10 @@ export default {
 .card {
   background-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);
-  margin-left: 12%;
 }
-.flexChild {
+
+
+.flexCustom {
   transition: transform 0.2s;
   font-size: 1.5em;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
@@ -124,11 +125,14 @@ export default {
   font-weight: bold;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
-.flexChild:hover {
+.flexCustom:hover {
   background-color: rgba(0, 0, 0, 0.6);
   transform: scale(1.02);
 }
 .btn-login {
+  border-radius: 5px;
+  background-color: rgb(0, 100, 75);
+  width: 15%;
   transition: transform 0.2s;
   font-size: 1.5em;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
@@ -140,7 +144,7 @@ export default {
   transform: scale(1.02);
 }
 /* 53C08C */
-.flexChild1 {
+.flexCustom1 {
   background-color: red;
 }
 .container-card {

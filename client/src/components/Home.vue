@@ -1,46 +1,50 @@
 <template>
   <div>
     <Navbar></Navbar>
+
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
-      <div class="card mb-3">
-        <div class="card-header">Create Account</div>
+      <div class="card mb-3 justify-content-center w-75">
+        <div class="card-header">Welcome to Dashboard
+            <br/>
+            <span class="lead text-dark-50">Select Feature </span>
+        </div>
         <div class="card-body text-dark">
-          <form class="flexCustom flexlogin d-flex mt-5 mb-5 flex-column align-items-center">
-           
-              <div class="p-4 w-50">
-                <label class="text-white font-weight-bold">Email</label>
-                <input
-                  class="form-control form-control-lg "
-                  type="Email"
-                  placeholder="Email"
-                  required
-                />
-              </div>
-              <div class="p-4 w-50">
-                <label class="text-white font-weight-bold">Password</label>
-                <input
-                  class="form-control form-control-lg"
-                  type="Password"
-                  placeholder="Password"
-                  required
-                />
-              </div>
-              <div class="p-4 mb-4 w-50">
-                <label class="text-white font-weight-bold">Confirm Password</label>
-                <input
-                  class="form-control form-control-lg"
-                  type="Password"
-                  placeholder="Confirm Password"
-                  required
-                />
-              </div>
+          <div class="d-flex flex-column bd-highlight">
+            <a class="childTomato p-1 bd-highlight">
+              <i class="fas fa-signal fa-sm"></i>
+              <br />
+              <span>
+                <strong>Line</strong>
+              </span>
+            </a>
 
-          </form>
+            <a class="childYellow p-1 mt-2 bd-highlight">
+              <i class="fas fa-chart-pie fa-sm"></i>
+              <br />
+              <span>
+                <strong>Pie</strong>
+              </span>
+            </a>
 
-          <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
-            <button type="submit" class="btn-login p-2 mb-2 ">Sign Up</button>
+            <a class="childAqua p-1 mt-2 bd-highlight">
+              <i class="far fa-chart-bar fa-sm"></i>
+              <br />
+              <span>
+                <strong>Bar</strong>
+              </span>
+            </a>
+
+            <a class="childGreen p-1 mt-2 mb-3 bd-highlight">
+              <i class="fas fa-map-marked-alt fa-sm"></i>
+              <br />
+              <span>
+                <strong>Maps</strong>
+              </span>
+            </a>
           </div>
+
+
         </div>
       </div>
     </div>
@@ -49,12 +53,11 @@
 </template>
 
 <script>
-import Navbar from "./Navbar";
+import Navbar from "./Navbar.vue";
+
 export default {
-  name: "signup",
-  components: {
-    Navbar,
-  },
+  name: "Home",
+  components: { Navbar },
 };
 </script>
 
@@ -74,12 +77,11 @@ export default {
 }
 
 .card {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);
+  margin-left: 12%;
 }
-
-
-.flexCustom {
+.flexChild {
   transition: transform 0.2s;
   font-size: 1.5em;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
@@ -99,6 +101,7 @@ export default {
 .childGreen:hover {
   background-color: rgba(83, 192, 140, 0.6);
   transform: scale(1.02);
+  margin-top: 1%;
 }
 .childYellow {
   background-color: rgba(251, 212, 109, 1);
@@ -106,6 +109,7 @@ export default {
 .childYellow:hover {
   background-color: rgba(251, 212, 109, 0.6);
   transform: scale(1.02);
+  margin-bottom: 1%;
 }
 .childAqua {
   background-color: rgba(29, 211, 189, 1);
@@ -113,6 +117,7 @@ export default {
 .childAqua:hover {
   background-color: rgba(29, 211, 189, 0.6);
   transform: scale(1.02);
+  margin-bottom: 1%;
 }
 .childTomato {
   background-color: rgba(160, 27, 27, 1);
@@ -120,20 +125,28 @@ export default {
 .childTomato:hover {
   background-color: rgba(207, 27, 27, 0.6);
   transform: scale(1.02);
+  margin-bottom: 1%;
 }
 .card-header {
-  background-color: rgba(0, 0, 0, 0.6);
-
-  color: white;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: black;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 2rem;
   font-weight: bold;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
-.flexCustom:hover {
-  background-color: rgba(0, 0, 0, 0.6);
+.flexChild:hover {
+  background-color: rgba(83, 192, 140, 0.6);
   transform: scale(1.02);
 }
+/* 53C08C */
+.flexChild1 {
+  background-color: red;
+}
+.container-card {
+  margin-top: 5vh;
+}
+
 .btn-login {
   color: white;
   border-radius: 5px;
@@ -149,13 +162,6 @@ export default {
   color: black;
   background-color: coral;
   transform: scale(1.02);
-}
-/* 53C08C */
-.flexCustom1 {
-  background-color: red;
-}
-.container-card {
-  margin-top: 5vh;
 }
 h3 {
   margin: 40px 0 0;
