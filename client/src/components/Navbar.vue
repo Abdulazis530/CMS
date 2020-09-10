@@ -29,7 +29,12 @@
           <router-link to="/home" class="nav-link">Maps</router-link>
         </li>
       </ul>
-      <button type="submit" class="btn-login p-2 mb-2" v-if="isLoggedIn">Logout</button>
+      <button
+        type="submit"
+        class="btn-login p-2 mb-2"
+        v-if="isLoggedIn"
+        @click="handleLogout"
+      >Logout</button>
     </div>
   </nav>
 </template>
@@ -39,7 +44,35 @@ export default {
     isLoggedIn: Boolean,
   },
   data() {
-    return {};
+    return {
+      url: "http://localhost:3000/api/users/destroy",
+    };
+  },
+  methods: {
+    async handleLogout() {
+      try {
+        const {
+          data: { logout },
+        } = await this.axios.get(this.url, {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        });
+        if (logout) {
+          localStorage.removeItem("email");
+          localStorage.removeItem("Authorization");
+          this.$router.push("/login");
+        }
+      } catch (error) {
+        console.log(error);
+        this.$swal({
+          title: "Something when wrong!",
+          text: "Please ask administrator to fix the issue",
+          icon: "error",
+          timer: 3000,
+        });
+      }
+    },
   },
 };
 </script>

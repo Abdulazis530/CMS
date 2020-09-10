@@ -87,8 +87,10 @@ export default {
             email: this.email.trim(),
             password: this.password.trim(),
           });
-
+          console.log(token)
           if (token) {
+            console.log(this.$router)
+
             this.$router.push("/home");
             this.$swal({
               icon: "success",

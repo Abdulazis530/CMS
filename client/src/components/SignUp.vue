@@ -86,7 +86,7 @@ export default {
     async handleSignup(e) {
       e.preventDefault();
       this.errors = [];
-
+      console.log(this.password.length)
       if (!this.password || !this.email || !this.password) {
         this.errors.push("Input cannot be empty!");
       } else {
@@ -132,7 +132,7 @@ export default {
             });
             localStorage.setItem("Authorization", token);
             localStorage.setItem("email", email);
-            console.log("ini", localStorage.getItem("Authorization"));
+
           }
         }
       } catch (error) {
