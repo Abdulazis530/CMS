@@ -16,7 +16,6 @@
                   placeholder="Email Address"
                   id="inputEmail"
                   v-model="email"
-                  
                   required
                 />
               </div>
@@ -29,7 +28,6 @@
                   id="inputPassword"
                   v-model="password"
                   required
-                  
                 />
               </div>
               <div class="p-4 mb-4 w-50">
@@ -43,8 +41,6 @@
                   placeholder="Confirm Password"
                   id="inputConfirmPassword"
                   v-model="retypepassword"
-                  
-                  
                   required
                 />
               </div>
@@ -86,7 +82,7 @@ export default {
     async handleSignup(e) {
       e.preventDefault();
       this.errors = [];
-      console.log(this.password.length)
+      console.log(this.password.length);
       if (!this.password || !this.email || !this.password) {
         this.errors.push("Input cannot be empty!");
       } else {
@@ -123,16 +119,16 @@ export default {
             this.errors.push(message);
           }
           if (token) {
+            localStorage.setItem("Authorization", token);
+            localStorage.setItem("email", email);
             this.$router.push("/home");
+
             this.$swal({
               icon: "success",
               title: "signup success",
               showConfirmButton: false,
               timer: 1200,
             });
-            localStorage.setItem("Authorization", token);
-            localStorage.setItem("email", email);
-
           }
         }
       } catch (error) {
@@ -163,7 +159,6 @@ export default {
       }
     },
   },
- 
 };
 </script>
 

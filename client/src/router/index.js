@@ -77,10 +77,7 @@ router.beforeEach((to, from, next) => {
     // this route requires auth, check if logged in
     const token = localStorage.getItem('Authorization')
     if (!token) {
-      next({
-        path: '/login',
-        query: { redirect: to.fullPath }
-      })
+      router.push('/login')
     } else {
       next()
     }

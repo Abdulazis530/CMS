@@ -87,10 +87,10 @@ export default {
             email: this.email.trim(),
             password: this.password.trim(),
           });
-          console.log(token)
-          if (token) {
-            console.log(this.$router)
 
+          if (token) {
+            localStorage.setItem("Authorization", token);
+            localStorage.setItem("email", email);
             this.$router.push("/home");
             this.$swal({
               icon: "success",
@@ -98,8 +98,6 @@ export default {
               showConfirmButton: false,
               timer: 1200,
             });
-            localStorage.setItem("Authorization", token);
-            localStorage.setItem("email", email);
           } else {
             this.error = message;
           }
