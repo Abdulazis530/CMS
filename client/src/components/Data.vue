@@ -197,13 +197,12 @@ export default {
     };
   },
   watch: {
-  searchLetter:function(){
-    this.handleSearch()
-  },
-  searchFrequency:function(){
-    this.handleSearch()
-
-  }
+    searchLetter: function () {
+      this.handleSearch();
+    },
+    searchFrequency: function () {
+      this.handleSearch();
+    },
   },
   asyncComputed: {
     async loadData() {
@@ -231,15 +230,16 @@ export default {
   methods: {
     async handleSubmitNewData(e) {
       e.preventDefault();
-      console.log(isNaN(this.newLetter));
-      console.log(isNaN(this.newFrequency));
+
       try {
-        if (this.newFrequency.length === 0 && this.newLetter.length === 0) {
+        //VALIDATION INPUT
+
+        if (!this.newFrequency && !this.newLetter) {
           this.errorLetter = "Input letter cannot empty!";
           this.errorFrequency = "Input Frequency cannot empty!";
-        } else if (this.newLetter.length === 0) {
+        } else if (!this.newLetter) {
           this.errorLetter = "Input letter cannot empty!";
-        } else if (this.newFrequency.length === 0) {
+        } else if (!this.newFrequency) {
           this.errorFrequency = "Input Frequency cannot empty!";
         } else if (!isNaN(this.newLetter) && isNaN(this.newFrequency)) {
           this.errorLetter = "Input should be string!";
@@ -314,15 +314,12 @@ export default {
       this.updateFrequency = document.querySelector("#updateFrequency").value;
 
       try {
-        if (
-          this.updateFrequency.length === 0 &&
-          this.updateLetter.length === 0
-        ) {
+        if (!this.updateFrequency && !this.updateLetter) {
           this.errorUpdateLetter = "Input letter cannot empty!";
           this.errorUpdateFrequency = "Input Frequency cannot empty!";
-        } else if (this.updateLetter.length === 0) {
+        } else if (!this.updateLetter) {
           this.errorUpdateLetter = "Input letter cannot empty!";
-        } else if (this.updateFrequency.length === 0) {
+        } else if (!this.updateFrequency) {
           this.errorUpdateFrequency = "Input Frequency cannot empty!";
         } else if (!isNaN(this.updateLetter) && isNaN(this.updateFrequency)) {
           this.errorUpdateLetter = "Input should be string!";
@@ -398,13 +395,13 @@ export default {
       } else if (searchFrequency) {
         filter = { frequency: searchFrequency };
       }
-      console.log(filter)
+      console.log(filter);
       try {
-        const {data} = await this.axios.post(`${this.url}search`, filter);
-        console.log(data)
-        this.items=[...data]
+        const { data } = await this.axios.post(`${this.url}search`, filter);
+        console.log(data);
+        this.items = [...data];
       } catch (error) {
-        console.log(error)
+        console.log(error);
         this.$swal({
           title: "Something when wrong!",
           text: "Please ask administrator to fix the issue",
