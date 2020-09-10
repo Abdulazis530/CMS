@@ -48,6 +48,7 @@
                         v-model="newLetter"
                         required
                       />
+                      <p class="error" v-if="errorLetter.length>0">{{errorLetter}}</p>
                     </div>
                     <div class="p-3 w-50">
                       <label for="inputNewFrequency" class="text-white font-weight-bold">Frequency</label>
@@ -59,6 +60,7 @@
                         v-model="newFrequency"
                         required
                       />
+                      <p class="error" v-if="errorFrequency.length>0">{{errorFrequency}}</p>
                     </div>
                   </div>
                 </div>
@@ -75,7 +77,7 @@
                   <button
                     type="button"
                     class="btn-togle-cancel p-2 ml-2 text-white"
-                    @click="togle=!togle"
+                    @click="handleTogle"
                   >
                     <i class="far fa-times-circle mr-1"></i>Cancel
                   </button>
@@ -125,6 +127,7 @@
                         required
                       />
                     </div>
+                    <p class="error" v-if="errorUpdateLetter.length>0">{{errorUpdateLetter}}</p>
                   </td>
                   <td>
                     <div class="form-row">
@@ -137,6 +140,7 @@
                         required
                       />
                     </div>
+                    <p class="error" v-if="errorUpdateFrequency.length>0">{{errorUpdateFrequency}}</p>
                   </td>
                   <td>
                     <button
@@ -147,8 +151,9 @@
                     ></button>
                     <button
                       type="button"
+                      :value="item._id"
                       class="btn-form-cancel-editmode py-2 fas fa-times-circle"
-                      @click="item.isEdit=!item.isEdit"
+                      @click="handleTogleEdit"
                     ></button>
                   </td>
                 </template>
@@ -159,7 +164,7 @@
             <button
               type="button"
               class="btn-togle-add p-2 mb-2 text-white"
-              @click="togle=!togle"
+              @click="handleTogle"
             >Add Data</button>
           </div>
         </div>
@@ -179,6 +184,10 @@ export default {
       isLoggedIn: true,
       letter: "",
       frequency: "",
+      errorLetter: "",
+      errorFrequency: "",
+      errorUpdateLetter: "",
+      errorUpdateFrequency: "",
       newLetter: "",
       newFrequency: "",
       updateLetter: "",
@@ -210,14 +219,23 @@ export default {
   methods: {
     async handleSubmitNewData(e) {
       e.preventDefault();
+      console.log(isNaN(this.newLetter));
+      console.log(isNaN(this.newFrequency));
       try {
-        if (this.newLetter.length === 0 || this.newFrequency.length === 0) {
-          this.$swal({
-            title: "Input cannot be empty!",
-            text: "Try again",
-            icon: "warning",
-            timer: 1200,
-          });
+        if (this.newFrequency.length === 0 && this.newLetter.length === 0) {
+          this.errorLetter = "Input letter cannot empty!";
+          this.errorFrequency = "Input Frequency cannot empty!";
+        } else if (this.newLetter.length === 0) {
+          this.errorLetter = "Input letter cannot empty!";
+        } else if (this.newFrequency.length === 0) {
+          this.errorFrequency = "Input Frequency cannot empty!";
+        } else if (!isNaN(this.newLetter) && isNaN(this.newFrequency)) {
+          this.errorLetter = "Input should be string!";
+          this.errorFrequency = "input should be number!";
+        } else if (!isNaN(this.newLetter)) {
+          this.errorLetter = "Input should be string!";
+        } else if (isNaN(this.newFrequency)) {
+          this.errorFrequency = "input should be number!";
         } else {
           const {
             data: { message },
@@ -233,6 +251,8 @@ export default {
           });
           this.newLetter = "";
           this.newFrequency = "";
+          this.errorLetter = "";
+          this.errorFrequency = "";
           this.$asyncComputed.loadData.update();
         }
       } catch (error) {
@@ -279,22 +299,38 @@ export default {
       const _id = e.target.value;
       this.updateLetter = document.querySelector("#updateLetter").value;
       this.updateFrequency = document.querySelector("#updateFrequency").value;
+
       try {
-        const confirmationUpdate = await this.$swal({
-          title: "Are you sure want to update this data?",
-          text: "You can't revert this action",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Yes update it!",
-          cancelButtonText: "No, Keep it!",
-          showCloseButton: true,
-          showLoaderOnConfirm: true,
-        });
-        if (confirmationUpdate.value) {
+        if (
+          this.updateFrequency.length === 0 &&
+          this.updateLetter.length === 0
+        ) {
+          this.errorUpdateLetter = "Input letter cannot empty!";
+          this.errorUpdateFrequency = "Input Frequency cannot empty!";
+        } else if (this.updateLetter.length === 0) {
+          this.errorUpdateLetter = "Input letter cannot empty!";
+        } else if (this.updateFrequency.length === 0) {
+          this.errorUpdateFrequency = "Input Frequency cannot empty!";
+        } else if (!isNaN(this.updateLetter) && isNaN(this.updateFrequency)) {
+          this.errorUpdateLetter = "Input should be string!";
+          this.errorUpdateFrequency = "input should be number!";
+        } else if (!isNaN(this.updateLetter)) {
+          this.errorUpdateLetter = "Input should be string!";
+        } else if (isNaN(this.updateFrequency)) {
+          this.errorUpdateFrequency = "input should be number!";
+        } else {
           await this.axios.put(`${this.url}${_id}`, {
             letter: this.updateLetter,
             frequency: this.updateFrequency,
           });
+          this.$swal({
+            icon: "success",
+            title: "Update Succes",
+            showConfirmButton: false,
+            timer: 1200,
+          });
+          this.errorUpdateLetter = "";
+          this.errorUpdateFrequency = "";
           this.$asyncComputed.loadData.update();
         }
       } catch (error) {
@@ -307,10 +343,35 @@ export default {
         });
       }
     },
+    handleTogle() {
+      this.newLetter = "";
+      this.newFrequency = "";
+      this.errorLetter = " ";
+      this.errorFrequency = " ";
+      this.togle = !this.togle;
+    },
+    handleTogleEdit(e) {
+      e.preventDefault();
+      const _id = e.target.value;
+      this.updateLetter = "";
+      this.updateFrequency = "";
+
+      this.errorUpdateLetter = " ";
+      this.errorUpdateFrequency = " ";
+      this.items = this.items.map((item) => {
+        if (item._id === _id) {
+          item.isEdit = !item.isEdit;
+        }
+        return item;
+      });
+    },
   },
 };
 </script>
 <style scoped>
+.error {
+  color: red;
+}
 .card-custom {
   background-color: rgba(0, 0, 0, 0.7);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);
