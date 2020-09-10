@@ -15,7 +15,7 @@
                   type="text"
                   placeholder="Letter"
                   id="inputLetter"
-                  v-model="letter"
+                  v-model="searchLetter"
                   required
                 />
               </div>
@@ -26,7 +26,7 @@
                   type="text"
                   placeholder="Frequency"
                   id="inputFrequency"
-                  v-model="frequency"
+                  v-model="searchFrequency"
                   required
                 />
               </div>
@@ -95,7 +95,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item,index) of loadData " :key="item._id">
+              <tr v-for="(item,index) of items " :key="item._id">
                 <template v-if="!item.isEdit">
                   <th scope="row">{{index+1}}</th>
                   <td>{{item.letter}}</td>
@@ -135,7 +135,6 @@
                         id="updateFrequency"
                         type="text"
                         class="form-control"
-                        name="PhoneNumber"
                         :value="item.frequency"
                         required
                       />
@@ -182,8 +181,8 @@ export default {
     return {
       user: localStorage.getItem("email"),
       isLoggedIn: true,
-      letter: "",
-      frequency: "",
+      searchLetter: "",
+      searchFrequency: "",
       errorLetter: "",
       errorFrequency: "",
       errorUpdateLetter: "",
@@ -194,17 +193,30 @@ export default {
       updateFrequency: "",
       url: "http://localhost:3000/api/data/",
       togle: false,
-      items: [],
+      items: null,
     };
+  },
+  watch: {
+  searchLetter:function(){
+    this.handleSearch()
+  },
+  searchFrequency:function(){
+    this.handleSearch()
+
+  }
   },
   asyncComputed: {
     async loadData() {
       try {
-        const { data } = await this.axios.get(this.url);
-        return (this.items = data.map((item) => {
-          item.isEdit = false;
-          return item;
-        }));
+        if (!this.searchLetter && !this.searchFrequency) {
+          const { data } = await this.axios.get(this.url);
+          return (this.items = data.map((item) => {
+            item.isEdit = false;
+            return item;
+          }));
+        } else {
+          return this.items;
+        }
       } catch (error) {
         console.log(error);
         this.$swal({
@@ -238,7 +250,7 @@ export default {
           this.errorFrequency = "input should be number!";
         } else {
           const {
-            data: { message },
+            data: { message, data },
           } = await this.axios.post(this.url, {
             letter: this.newLetter,
             frequency: this.newFrequency,
@@ -249,11 +261,12 @@ export default {
             showConfirmButton: false,
             timer: 1200,
           });
+
+          this.items.push(data);
           this.newLetter = "";
           this.newFrequency = "";
           this.errorLetter = "";
           this.errorFrequency = "";
-          this.$asyncComputed.loadData.update();
         }
       } catch (error) {
         console.log(error);
@@ -282,7 +295,7 @@ export default {
         });
         if (confirmationDelete.value) {
           await this.axios.delete(`${this.url}${_id}`);
-          this.$asyncComputed.loadData.update();
+          this.items = this.items.filter((item) => item._id !== _id);
         }
       } catch (error) {
         console.log(error);
@@ -319,19 +332,29 @@ export default {
         } else if (isNaN(this.updateFrequency)) {
           this.errorUpdateFrequency = "input should be number!";
         } else {
-          await this.axios.put(`${this.url}${_id}`, {
+          const {
+            data: { message, data },
+          } = await this.axios.put(`${this.url}${_id}`, {
             letter: this.updateLetter,
             frequency: this.updateFrequency,
           });
+
+          this.items = this.items.map((item) => {
+            if (item._id === _id) {
+              item.letter = data.letter;
+              item.frequency = data.frequency;
+              item.isEdit = !item.isEdit;
+            }
+            return item;
+          });
           this.$swal({
             icon: "success",
-            title: "Update Succes",
+            title: message,
             showConfirmButton: false,
             timer: 1200,
           });
           this.errorUpdateLetter = "";
           this.errorUpdateFrequency = "";
-          this.$asyncComputed.loadData.update();
         }
       } catch (error) {
         console.log(error);
@@ -364,6 +387,31 @@ export default {
         }
         return item;
       });
+    },
+    async handleSearch() {
+      let filter = {};
+      const { searchLetter, searchFrequency } = this;
+      if (searchFrequency && searchLetter) {
+        filter = { letter: searchLetter, frequency: searchFrequency };
+      } else if (searchLetter) {
+        filter = { letter: searchLetter };
+      } else if (searchFrequency) {
+        filter = { frequency: searchFrequency };
+      }
+      console.log(filter)
+      try {
+        const {data} = await this.axios.post(`${this.url}search`, filter);
+        console.log(data)
+        this.items=[...data]
+      } catch (error) {
+        console.log(error)
+        this.$swal({
+          title: "Something when wrong!",
+          text: "Please ask administrator to fix the issue",
+          icon: "error",
+          timer: 3000,
+        });
+      }
     },
   },
 };

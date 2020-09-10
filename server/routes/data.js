@@ -12,16 +12,21 @@ let response = {
 // #1 FILTER localhost 3000/api/data/search
 router.post('/search', async (req, res, next) => {
     const { letter, frequency } = req.body
-    let filter ={ $or: [] }
+    let filter = { $or: [] }
     try {
-        if(letter) filter.$or.push({ letter: new RegExp(letter,"i") })
-        if(frequency) filter.$or.push({ frequency })
+        if (letter) filter.$or.push({ letter: new RegExp(letter, "i") })
+        if (frequency) filter.$or.push({ frequency })
+        if (filter.$or.length === 0) {
+            const response = []
+            res.status(200).json(response)
+
+        }
         const data = await Data.find(filter)
-        const response = data.map(field=>{ 
+        const response = data.map(field => {
             return {
-                _id:field._id,
-                letter:field.letter,
-                frequency:field.frequency   
+                _id: field._id,
+                letter: field.letter,
+                frequency: field.frequency
             }
         })
         res.status(200).json(response)
@@ -93,7 +98,7 @@ router.post('/', async (req, res, next) => {
             frequency
         }
         res.status(201).json(response)
-        
+
 
     } catch (error) {
         console.log(error)
@@ -123,7 +128,7 @@ router.delete("/:id", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
     const _id = req.params.id
     try {
-        const data = await Data.findOne({_id})
+        const data = await Data.findOne({ _id })
         console.log(data)
         if (!data) return res.status(400).json(response)
         const { letter, frequency } = data
