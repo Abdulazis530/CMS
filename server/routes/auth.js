@@ -51,21 +51,20 @@ router.post('/register', async (req, res, next) => {
       res.status(500).json(response)
     }
   } else {
-    response.message = "email or password wrong"
-    res.status(400).json(response)
+    response.message = "Email or password wrong!"
+    res.status(200).json(response)
   }
 });
 
 router.post('/login', async (req, res, next) => {
-  
+
   let response = { data: {}, token: null, message: "" }
   const { email, password } = req.body
-  console.log(email)
-  console.log(password)
+  console.log(req.body)
   try {
     const user = await User.findOne({ email })
     if (!user) {
-      response.message = 'email or password wrong'
+      response.message = 'Email or password wrong!'
       return res.status(200).json(response)
     }
     const check = await bcrypt.compare(password, user.password)
@@ -76,7 +75,7 @@ router.post('/login', async (req, res, next) => {
         response.token = user.token
         res.status(201).json(response)
       } else {
-        const newToken = jwt.sign({ email}, secret)
+        const newToken = jwt.sign({ email }, secret)
         const updateUser = await User.updateOne({ email: user.email }, { token: newToken })
         response.data.email = email
         response.message = "login success"
@@ -91,8 +90,8 @@ router.post('/login', async (req, res, next) => {
       }
 
     } else {
-      response.message = 'email or password wrong'
-      res.status(400).json(response)
+      response.message = 'Email or password wrong!'
+      res.status(200).json(response)
     }
   } catch (error) {
     console.log(error)
@@ -124,31 +123,6 @@ router.post('/check', async (req, res, next) => {
   }
 
 });
-
-// router.post('/check', function (req, res, next) {
-//   let token = req.header('Authorization');
-//   let response = {
-//     valid: false
-//   };
-
-//   if (typeof token !== undefined) {
-//     const decoded = jwt.verify(token, secret);
-//     Users.find({ email: decoded.email })
-//       .then(result => {
-//         if (result) {
-//           response.valid = true;
-//           res.status(200).json(response);
-//         } else {
-//           res.status(500).json(response);
-//         }
-//       })
-//       .catch(err => {
-//         res.status(500).json(response);
-//       })
-//   } else {
-//     res.status(500).json(response);
-//   }
-// })
 
 
 router.get('/destroy', async (req, res, next) => {

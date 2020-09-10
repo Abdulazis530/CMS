@@ -32,6 +32,8 @@
               </div>
             </div>
 
+            <p class="error" v-if="error">{{error}}</p>
+
             <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
               <button type="submit" class="btn-login p-2 mb-2" @click="handleLogin">Login</button>
               <span class="p-2 text-white font-weight-bold lead">
@@ -60,38 +62,32 @@ export default {
       password: "",
       isLoggedIn: false,
       url: "http://localhost:3000/api/users/",
+      error: "",
     };
   },
   methods: {
     async handleLogin(e) {
       e.preventDefault();
       try {
-        if (this.email.length === 0 || this.password.length === 0) {
-          this.$swal({
-            title: "Input cannot be empty!",
-            text: "Try again",
-            icon: "warning",
-            timer: 1200,
-          });
-        } else {
+        this.error = "";
+        //check if email or password or email is empty
+        if (!this.email || !this.password) {
+          this.error = "Password and Email cannot be empty!";
+        }
 
+        if (!this.error) {
+          //sanitize password and email to eliminate white spaces(use javascript string method String.trim())
           const {
             data: {
               token,
               data: { email },
+              message,
             },
           } = await this.axios.post(`${this.url}login`, {
-            email: this.email,
-            password: this.password,
+            email: this.email.trim(),
+            password: this.password.trim(),
           });
-          if (!token) {
-            this.$swal({
-              title: "Email or Password Wrong!",
-              text: "Try again",
-              icon: "error",
-              timer: 1200,
-            });
-          }
+
           if (token) {
             this.$router.push("/home");
             this.$swal({
@@ -102,6 +98,8 @@ export default {
             });
             localStorage.setItem("Authorization", token);
             localStorage.setItem("email", email);
+          } else {
+            this.error = message;
           }
         }
       } catch (error) {
@@ -132,7 +130,11 @@ export default {
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0px 5px 10px rgba(1, 5, 1, 0.6);
 }
-
+.error {
+  color: red;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
 .card {
   background-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);

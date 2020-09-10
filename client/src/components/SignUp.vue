@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar :isLoggedIn="isLoggedIn"></Navbar>
-    <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
+
     <div class="container-card container">
       <div class="card mb-3">
         <div class="card-header">Create Account</div>
@@ -16,6 +16,7 @@
                   placeholder="Email Address"
                   id="inputEmail"
                   v-model="email"
+                  
                   required
                 />
               </div>
@@ -28,6 +29,7 @@
                   id="inputPassword"
                   v-model="password"
                   required
+                  
                 />
               </div>
               <div class="p-4 mb-4 w-50">
@@ -41,11 +43,17 @@
                   placeholder="Confirm Password"
                   id="inputConfirmPassword"
                   v-model="retypepassword"
+                  
+                  
                   required
                 />
               </div>
             </div>
-
+            <template v-if="this.errors.length">
+              <ul v-for="(error,index) of errors" :key="index">
+                <li class="error">{{error}}</li>
+              </ul>
+            </template>
             <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
               <button type="submit" class="btn-login p-2 mb-2" @click="handleSignup">Sign Up</button>
             </div>
@@ -70,53 +78,49 @@ export default {
       password: "",
       retypepassword: "",
       isLoggedIn: false,
-      url: "http://localhost:3000/api/users/",
+      url: "http://localhost:3000/api/users/register",
+      errors: [],
     };
   },
   methods: {
     async handleSignup(e) {
       e.preventDefault();
+      this.errors = [];
+
+      if (!this.password || !this.email || !this.password) {
+        this.errors.push("Input cannot be empty!");
+      } else {
+        if (!this.emailValidation(this.email))
+          this.errors.push(
+            'Email should contain valid domain and "@" symbol !'
+          );
+        if (!this.passwordValidation(this.password))
+          this.errors.push(
+            "password must be between 6 and 20 characters and contains at least one numeric digit, one uppercase and one lowercase letter"
+          );
+        if (!this.passwordValidation(this.retypepassword))
+          this.errors.push(
+            "password must be between 6 and 20 characters and contains at least one numeric digit, one uppercase and one lowercase letter"
+          );
+        if (this.password !== this.retypepassword)
+          this.errors.push("Password did not match!");
+      }
+
       try {
-
-        if (
-          this.email.length === 0 ||
-          this.password.length === 0 ||
-          this.retypepassword.length === 0
-        ) {
-          this.$swal({
-            title: "Input cannot be empty!",
-            text: "Try again",
-            icon: "warning",
-            timer: 1200,
-          });
-        } else if(this.password !==this.retypepassword){
-           this.$swal({
-            title: "Password and password confirmation didn't match!",
-            text: "Try again",
-            icon: "warning",
-            timer: 1200,
-          });
-        }
-        else{
-
+        if (this.errors.length === 0) {
           const {
             data: {
               token,
               data: { email },
               message,
             },
-          } = await this.axios.post(`${this.url}register`, {
+          } = await this.axios.post(this.url, {
             email: this.email,
             password: this.password,
             retypepassword: this.retypepassword,
           });
           if (message == "email already exists") {
-            this.$swal({
-              title: message,
-              text: "Try again",
-              icon: "warning",
-              timer: 1200,
-            });
+            this.errors.push(message);
           }
           if (token) {
             this.$router.push("/home");
@@ -141,7 +145,25 @@ export default {
         });
       }
     },
+    emailValidation(email) {
+      const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+      if (email.match(mailformat)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    passwordValidation(password) {
+      const passwFormat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+      if (password.match(passwFormat)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
+ 
 };
 </script>
 
@@ -242,6 +264,11 @@ export default {
 }
 .container-card {
   margin-top: 5vh;
+}
+.error {
+  color: red;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 h3 {
   margin: 40px 0 0;
