@@ -56,6 +56,7 @@ router.get("/", async (req, res, next) => {
 // #3 EDIT  localhost 3000/api/data/219asdawdaw  
 router.put("/:id", async (req, res, next) => {
     const { letter, frequency } = req.body
+    console.log(req.body)
     const _id = req.params.id
     try {
         const data = await Data.findByIdAndUpdate(

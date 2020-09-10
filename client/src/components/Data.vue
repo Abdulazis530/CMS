@@ -33,7 +33,7 @@
             </div>
           </div>
           <transition name="slide-fade">
-            <div class="card-custom card mb-3" v-if="togle">
+            <div class="card-custom card mb-5" v-if="togle">
               <div class="card-body text-dark">
                 <div>
                   <div class="card-header mt-2">ADD DATA</div>
@@ -99,26 +99,28 @@
                   <td>{{item.letter}}</td>
                   <td>{{item.frequency}}</td>
                   <td class="d-flex justify-content-center">
-                    <button type="button" class="btn-form-delete p-1 mr-2">
-                      <i class="far fa-trash-alt"></i>
-                    </button>
                     <button
                       type="button"
-                      class="btn-form-edit p-1"
+                      class="btn-form-delete py-2 mr-2 far fa-trash-alt"
+                      :value="item._id"
+                      @click="handleDelete"
+                    ></button>
+                    <button
+                      type="button"
+                      class="btn-form-edit py-2 fas fa-edit"
                       @click="item.isEdit=!item.isEdit"
-                    >
-                      <i class="fas fa-edit"></i>
-                    </button>
+                    ></button>
                   </td>
                 </template>
+
                 <template v-else>
                   <th scope="row">{{index+1}}</th>
                   <td>
                     <div class="form-row">
                       <input
+                        id="updateLetter"
                         type="text"
                         class="form-control"
-                        name="Name"
                         :value="item.letter"
                         required
                       />
@@ -127,67 +129,45 @@
                   <td>
                     <div class="form-row">
                       <input
+                        id="updateFrequency"
                         type="text"
                         class="form-control"
                         name="PhoneNumber"
                         :value="item.frequency"
+                        required
+
                       />
                     </div>
                   </td>
                   <td>
-                    <button type="button" class="btn-form-save-editmode p-1 mr-2">
-                      <i class="fas fa-save"></i>
-                    </button>
                     <button
                       type="button"
-                      class="btn-form-cancel-editmode p-1"
+                      class="btn-form-save-editmode py-2 mr-2 fas fa-save"
+                      :value="item._id"
+                      @click="handleEdit"
+                    ></button>
+                    <button
+                      type="button"
+                      class="btn-form-cancel-editmode py-2 fas fa-times-circle"
                       @click="item.isEdit=!item.isEdit"
-                    >
-                      <i class="fas fa-times-circle"></i>
-                    </button>
+                    ></button>
                   </td>
                 </template>
               </tr>
             </tbody>
           </table>
           <div class="d-flex mt-5 mb-5 text-black-50 flex-row bd-highlight justify-content-center">
-            <button type="button" class="btn-togle-add p-2 mb-2" @click="togle=!togle">Add Data</button>
+            <button
+              type="button"
+              class="btn-togle-add p-2 mb-2 text-white"
+              @click="togle=!togle"
+            >Add Data</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-
-          <div>
-            <div class="card-header mt-2">ADD DATA</div>
-            <div class="flexCustom d-flex mb-5 flex-row">
-              <div class="p-4 w-50">
-                <label for="inputLetter" class="text-white font-weight-bold">Letter</label>
-                <input
-                  class="form-control form-control-lg"
-                  type="text"
-                  placeholder="Letter"
-                  id="inputLetter"
-                  v-model="letter"
-                  required
-                />
-              </div>
-              <div class="p-4 w-50">
-                <label for="inputFrequency" class="text-white font-weight-bold">Frequency</label>
-                <input
-                  class="form-control form-control-lg"
-                  type="text"
-                  placeholder="Frequency"
-                  id="inputFrequency"
-                  v-model="frequency"
-                  required
-                />
-              </div>
-
-            </div>
-          </div>
 <script>
 import Navbar from "./Navbar.vue";
 export default {
@@ -202,6 +182,8 @@ export default {
       frequency: "",
       newLetter: "",
       newFrequency: "",
+      updateLetter: "",
+      updateFrequency: "",
       url: "http://localhost:3000/api/data/",
       togle: false,
       items: [],
@@ -239,7 +221,7 @@ export default {
           });
         } else {
           const {
-            data: { data, message },
+            data: { message },
           } = await this.axios.post(this.url, {
             letter: this.newLetter,
             frequency: this.newFrequency,
@@ -250,11 +232,60 @@ export default {
             showConfirmButton: false,
             timer: 1200,
           });
-          this.newLetter=""
-          this.newFrequency=""
-          this.items = [...this.items, data];
+          this.newLetter = "";
+          this.newFrequency = "";
           this.$asyncComputed.loadData.update();
         }
+      } catch (error) {
+        console.log(error);
+        this.$swal({
+          title: "Something when wrong!",
+          text: "Please ask administrator to fix the issue",
+          icon: "error",
+          timer: 3000,
+        });
+      }
+    },
+    async handleDelete(e) {
+      e.preventDefault();
+      const _id = e.target.value;
+
+      try {
+        const confirmationDelete = await this.$swal({
+          title: "Are you sure?",
+          text: "You can't revert this action",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes Delete it!",
+          cancelButtonText: "No, Keep it!",
+          showCloseButton: true,
+          showLoaderOnConfirm: true,
+        });
+        if (confirmationDelete.value) {
+          await this.axios.delete(`${this.url}${_id}`);
+          this.$asyncComputed.loadData.update();
+        }
+      } catch (error) {
+        console.log(error);
+        this.$swal({
+          title: "Something when wrong!",
+          text: "Please ask administrator to fix the issue",
+          icon: "error",
+          timer: 3000,
+        });
+      }
+    },
+    async handleEdit(e) {
+      e.preventDefault();
+      const _id = e.target.value;
+      this.updateLetter = document.querySelector("#updateLetter").value;
+      this.updateFrequency = document.querySelector("#updateFrequency").value;
+      try {
+        await this.axios.put(`${this.url}${_id}`, {
+          letter: this.updateLetter,
+          frequency: this.updateFrequency,
+        });
+        this.$asyncComputed.loadData.update();
       } catch (error) {
         console.log(error);
         this.$swal({
