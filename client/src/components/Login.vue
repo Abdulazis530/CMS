@@ -74,6 +74,7 @@ export default {
             timer: 1200,
           });
         } else {
+
           const {
             data: {
               token,
@@ -101,16 +102,15 @@ export default {
             });
             localStorage.setItem("Authorization", token);
             localStorage.setItem("email", email);
-            console.log("ini", localStorage.getItem("Authorization"));
           }
         }
       } catch (error) {
         console.log(error);
         this.$swal({
           title: "Something when wrong!",
-          text: "status 500, call your administration",
+          text: "Please ask administrator to fix the issue",
           icon: "error",
-          timer: 1200,
+          timer: 3000,
         });
       }
     },

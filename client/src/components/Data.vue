@@ -33,45 +33,56 @@
             </div>
           </div>
           <transition name="slide-fade">
-          <div class="card-custom card mb-3" v-if="togle">
-            <div class="card-body text-dark">
-              <div>
-                <div class="card-header mt-2">ADD DATA</div>
-                <div class="flexCustom d-flex mb-5 flex-row">
-                  <div class="p-3 w-50">
-                    <label for="inputLetter" class="text-white font-weight-bold">Letter</label>
-                    <input
-                      class="form-control form-control-lg"
-                      type="text"
-                      placeholder="Letter"
-                      id="inputLetter"
-                      v-model="letter"
-                      required
-                    />
-                  </div>
-                  <div class="p-3 w-50">
-                    <label for="inputFrequency" class="text-white font-weight-bold">Frequency</label>
-                    <input
-                      class="form-control form-control-lg"
-                      type="text"
-                      placeholder="Frequency"
-                      id="inputFrequency"
-                      v-model="frequency"
-                      required
-                    />
+            <div class="card-custom card mb-3" v-if="togle">
+              <div class="card-body text-dark">
+                <div>
+                  <div class="card-header mt-2">ADD DATA</div>
+                  <div class="flexCustom d-flex mb-5 flex-row">
+                    <div class="p-3 w-50">
+                      <label for="inputNewLetter" class="text-white font-weight-bold">Letter</label>
+                      <input
+                        class="form-control form-control-lg"
+                        type="text"
+                        placeholder="Add new letter here"
+                        id="inputNewLetter"
+                        v-model="newLetter"
+                        required
+                      />
+                    </div>
+                    <div class="p-3 w-50">
+                      <label for="inputNewFrequency" class="text-white font-weight-bold">Frequency</label>
+                      <input
+                        class="form-control form-control-lg"
+                        type="text"
+                        placeholder="Add new frequency here"
+                        id="inputNewFrequency"
+                        v-model="newFrequency"
+                        required
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="d-flex mt-2 mb-3 text-black-50 flex-row bd-highlight justify-content-center"
-              >
-                <button type="button" class="btn-togle-add p-2 text-white" @click="handleTogle"><i class="far fa-plus-square mr-1"></i>Save</button>
-                <button type="button" class="btn-togle-cancel p-2 ml-2 text-white" @click="togle=!togle"><i class=" far fa-times-circle mr-1"></i>Cancel</button>
-                
+                <div
+                  class="d-flex mt-2 mb-3 text-black-50 flex-row bd-highlight justify-content-center"
+                >
+                  <button
+                    type="button"
+                    class="btn-togle-add p-2 text-white"
+                    @click="handleSubmitNewData"
+                  >
+                    <i class="far fa-plus-square mr-1"></i>Save
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-togle-cancel p-2 ml-2 text-white"
+                    @click="togle=!togle"
+                  >
+                    <i class="far fa-times-circle mr-1"></i>Cancel
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-            </transition>
+          </transition>
           <table class="table table-striped font-weight-bold text-black-50">
             <thead>
               <tr>
@@ -83,17 +94,59 @@
             </thead>
             <tbody>
               <tr v-for="(item,index) of loadData " :key="item._id">
-                <th scope="row">{{index+1}}</th>
-                <td>{{item.letter}}</td>
-                <td>{{item.frequency}}</td>
-                <td class="d-flex justify-content-center">
-                  <button type="button" class="btn-form-delete p-1 mr-2">
-                    <i class="far fa-trash-alt"></i>
-                  </button>
-                  <button type="button" class="btn-form-edit p-1">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                </td>
+                <template v-if="!item.isEdit">
+                  <th scope="row">{{index+1}}</th>
+                  <td>{{item.letter}}</td>
+                  <td>{{item.frequency}}</td>
+                  <td class="d-flex justify-content-center">
+                    <button type="button" class="btn-form-delete p-1 mr-2">
+                      <i class="far fa-trash-alt"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-form-edit p-1"
+                      @click="item.isEdit=!item.isEdit"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </td>
+                </template>
+                <template v-else>
+                  <th scope="row">{{index+1}}</th>
+                  <td>
+                    <div class="form-row">
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="Name"
+                        :value="item.letter"
+                        required
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="form-row">
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="PhoneNumber"
+                        :value="item.frequency"
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <button type="button" class="btn-form-save-editmode p-1 mr-2">
+                      <i class="fas fa-save"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-form-cancel-editmode p-1"
+                      @click="item.isEdit=!item.isEdit"
+                    >
+                      <i class="fas fa-times-circle"></i>
+                    </button>
+                  </td>
+                </template>
               </tr>
             </tbody>
           </table>
@@ -147,23 +200,70 @@ export default {
       isLoggedIn: true,
       letter: "",
       frequency: "",
+      newLetter: "",
+      newFrequency: "",
       url: "http://localhost:3000/api/data/",
-      togle:false,
-      items:[]
+      togle: false,
+      items: [],
     };
   },
   asyncComputed: {
     async loadData() {
-      const { data } = await this.axios.get(this.url);
-      this.items=[...data]
-      return data;
+      try {
+        const { data } = await this.axios.get(this.url);
+        return (this.items = data.map((item) => {
+          item.isEdit = false;
+          return item;
+        }));
+      } catch (error) {
+        console.log(error);
+        this.$swal({
+          title: "Something when wrong!",
+          text: "Please ask administrator to fix the issue",
+          icon: "error",
+          timer: 3000,
+        });
+      }
     },
   },
   methods: {
-    handleTogle(e) {
+    async handleSubmitNewData(e) {
       e.preventDefault();
-      console.log(this.items);
-      alert("gotcha");
+      try {
+        if (this.newLetter.length === 0 || this.newFrequency.length === 0) {
+          this.$swal({
+            title: "Input cannot be empty!",
+            text: "Try again",
+            icon: "warning",
+            timer: 1200,
+          });
+        } else {
+          const {
+            data: { data, message },
+          } = await this.axios.post(this.url, {
+            letter: this.newLetter,
+            frequency: this.newFrequency,
+          });
+          this.$swal({
+            icon: "success",
+            title: message,
+            showConfirmButton: false,
+            timer: 1200,
+          });
+          this.newLetter=""
+          this.newFrequency=""
+          this.items = [...this.items, data];
+          this.$asyncComputed.loadData.update();
+        }
+      } catch (error) {
+        console.log(error);
+        this.$swal({
+          title: "Something when wrong!",
+          text: "Please ask administrator to fix the issue",
+          icon: "error",
+          timer: 3000,
+        });
+      }
     },
   },
 };
@@ -204,7 +304,8 @@ export default {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
-.btn-togle-add,.btn-togle-cancel {
+.btn-togle-add,
+.btn-togle-cancel {
   border-radius: 5px;
   background-color: rgb(50, 137, 219);
   width: 15%;
@@ -214,20 +315,21 @@ export default {
   font-weight: bold;
   border: none;
 }
-.btn-togle-cancel{
+.btn-togle-cancel {
   background-color: rgb(192, 145, 17);
 }
 .btn-togle-add:hover,
 .btn-togle-cancel:hover {
   background-color: coral;
   transform: scale(1.02);
+  border: none;
 }
 
 .btn-form-delete,
 .btn-form-edit {
   border-radius: 5px;
   background-color: rgb(50, 137, 219);
-  width: 15%;
+  width: 2em;
   transition: transform 0.2s;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
   font-weight: bold;
@@ -241,11 +343,6 @@ export default {
   background-color: rgb(14, 139, 56);
   color: white;
 }
-.btn-form-delete:hover,
-.btn-form-edit:hover {
-  background-color: coral;
-  transform: scale(1.02);
-}
 .btn-form-edit:hover {
   background-color: rgba(14, 139, 56, 0.6);
   transform: scale(1.02);
@@ -255,6 +352,31 @@ export default {
   transform: scale(1.02);
 }
 
+.btn-form-save-editmode,
+.btn-form-cancel-editmode {
+  border-radius: 5px;
+  width: 2.5em;
+  transition: transform 0.2s;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
+  font-weight: bold;
+  border: none;
+}
+.btn-form-save-editmode {
+  background-color: rgb(64, 168, 196);
+  color: white;
+}
+.btn-form-cancel-editmode {
+  background-color: rgb(139, 14, 14);
+  color: white;
+}
+.btn-form-cancel-editmode:hover {
+  background-color: rgba(139, 14, 14, 0.6);
+  transform: scale(1.02);
+}
+.btn-form-save-editmode:hover {
+  background-color: rgba(64, 168, 196, 0.6);
+  transform: scale(1.02);
+}
 
 /* 53C08C */
 .container-card {
@@ -277,12 +399,15 @@ a {
 a:hover {
   color: white;
 }
-
+.form-row {
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
 .slide-fade-enter-active {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 .slide-fade-leave-active {
-  transition: all .3s ease
+  transition: all 0.3s ease;
 }
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active below version 2.1.8 */ {
