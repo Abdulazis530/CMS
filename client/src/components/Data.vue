@@ -135,7 +135,6 @@
                         name="PhoneNumber"
                         :value="item.frequency"
                         required
-
                       />
                     </div>
                   </td>
@@ -281,11 +280,23 @@ export default {
       this.updateLetter = document.querySelector("#updateLetter").value;
       this.updateFrequency = document.querySelector("#updateFrequency").value;
       try {
-        await this.axios.put(`${this.url}${_id}`, {
-          letter: this.updateLetter,
-          frequency: this.updateFrequency,
+        const confirmationUpdate = await this.$swal({
+          title: "Are you sure want to update this data?",
+          text: "You can't revert this action",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes update it!",
+          cancelButtonText: "No, Keep it!",
+          showCloseButton: true,
+          showLoaderOnConfirm: true,
         });
-        this.$asyncComputed.loadData.update();
+        if (confirmationUpdate.value) {
+          await this.axios.put(`${this.url}${_id}`, {
+            letter: this.updateLetter,
+            frequency: this.updateFrequency,
+          });
+          this.$asyncComputed.loadData.update();
+        }
       } catch (error) {
         console.log(error);
         this.$swal({
