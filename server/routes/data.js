@@ -11,24 +11,43 @@ let response = {
 }
 // #1 FILTER localhost 3000/api/data/search
 router.post('/search', async (req, res, next) => {
+    let page = Number(req.query.page) || 1
+    let limit = Number(req.query.limit) || 0
+    let offset = page * limit - limit
+
+
     const { letter, frequency } = req.body
+    console.log(frequency)
     let filter = { $or: [] }
+    const response = {
+        totalData: 0,
+        data: []
+    }
     try {
         if (letter) filter.$or.push({ letter: new RegExp(letter, "i") })
         if (frequency) filter.$or.push({ frequency })
         if (filter.$or.length === 0) {
-            const response = []
-            res.status(200).json(response)
+
+           return res.status(200).json(response)
 
         }
         const data = await Data.find(filter)
-        const response = data.map(field => {
-            return {
-                _id: field._id,
-                letter: field.letter,
-                frequency: field.frequency
-            }
+        const totalData = data.length
+        const paginatedData = await Data.find(filter).limit(limit).skip(offset)
+
+        response.totalData = totalData
+
+        paginatedData.forEach(field => {
+            const { _id, letter, frequency } = field
+
+            response.data.push({
+                _id,
+                letter,
+                frequency
+            })
+
         })
+
         res.status(200).json(response)
 
     } catch (error) {
@@ -40,20 +59,20 @@ router.post('/search', async (req, res, next) => {
 
 // #2 READ  localhost 3000/api/data 
 router.get("/", async (req, res, next) => {
-    let page=Number(req.query.page) || 1
-    let limit=Number(req.query.limit) || 0
+    let page = Number(req.query.page) || 1
+    let limit = Number(req.query.limit) || 0
 
-    let offset=page*limit-limit
-    
+    let offset = page * limit - limit
+
     try {
         const data = await Data.find()
-        const totalData=data.length
-        let response={
+        const totalData = data.length
+        let response = {
             totalData,
-            data:[]
+            data: []
         }
-        const paginatedData=await Data.find().limit(limit).skip(offset)
-        
+        const paginatedData = await Data.find().limit(limit).skip(offset)
+
         paginatedData.forEach(field => {
             const { _id, letter, frequency } = field
             response.data.push({
@@ -62,7 +81,7 @@ router.get("/", async (req, res, next) => {
                 frequency
             })
         })
-        
+
         res.status(200).json(response)
     } catch (error) {
         console.log(error)

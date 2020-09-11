@@ -110,7 +110,8 @@
                     <button
                       type="button"
                       class="btn-form-edit py-2 fas fa-edit"
-                      @click="item.isEdit=!item.isEdit"
+                      :value="item._id"
+                      @click="handleTogleEdit"
                     ></button>
                   </td>
                 </template>
@@ -161,33 +162,64 @@
           </table>
 
           <div class="mt-5 mb-5 text-black-50">
-            <nav aria-label="...">
-              <ul class="pagination justify-content-center">
-                <li class="page-item" :class="{disabled:currPage==1}">
-                  <button class="page-link" @click="handlePrevious">Previous</button>
-                </li>
-
-                <template>
-                  <li
-                    class="page-item"
-                    v-for="(page,index) of totalPage"
-                    :key="index"
-                    :class="{active:page==currPage}"
-                  >
-                    <button
-                      type="button"
-                      class="page-link"
-                      :value="page"
-                      @click="changePage"
-                    >{{index+1}}</button>
+            <template v-if="searchMode">
+              <nav aria-label="...">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item" :class="{disabled:currPageBrowse==1}">
+                    <button class="page-link" @click="handlePrevious">Previous</button>
                   </li>
-                </template>
 
-                <li class="page-item" :class="{disabled:currPage==totalPage}">
-                  <button type="button" class="page-link" @click="handleNext">Next</button>
-                </li>
-              </ul>
-            </nav>
+                  <template>
+                    <li
+                      class="page-item"
+                      v-for="(page,index) of totalPage"
+                      :key="index"
+                      :class="{active:page==currPageBrowse}"
+                    >
+                      <button
+                        type="button"
+                        class="page-link"
+                        :value="page"
+                        @click="changePage"
+                      >{{index+1}}</button>
+                    </li>
+                  </template>
+
+                  <li class="page-item" :class="{disabled:currPageBrowse==totalPage}">
+                    <button type="button" class="page-link" @click="handleNext">Next</button>
+                  </li>
+                </ul>
+              </nav>
+            </template>
+            <template v-else>
+              <nav aria-label="...">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item" :class="{disabled:currPage==1}">
+                    <button class="page-link" @click="handlePrevious">Previous</button>
+                  </li>
+
+                  <template>
+                    <li
+                      class="page-item"
+                      v-for="(page,index) of totalPage"
+                      :key="index"
+                      :class="{active:page==currPage}"
+                    >
+                      <button
+                        type="button"
+                        class="page-link"
+                        :value="page"
+                        @click="changePage"
+                      >{{index+1}}</button>
+                    </li>
+                  </template>
+
+                  <li class="page-item" :class="{disabled:currPage==totalPage}">
+                    <button type="button" class="page-link" @click="handleNext">Next</button>
+                  </li>
+                </ul>
+              </nav>
+            </template>
           </div>
 
           <div class="d-flex mt-5 mb-5 text-black-50 flex-row bd-highlight justify-content-center">
@@ -226,9 +258,11 @@ export default {
       togle: false,
       items: null,
       currPage: 1,
+      currPageBrowse: 1,
       limit: 5,
       totalPage: null,
       offset: 0,
+      searchMode: false,
     };
   },
   watch: {
@@ -243,6 +277,7 @@ export default {
     async loadData() {
       try {
         if (!this.searchLetter && !this.searchFrequency) {
+          this.searchMode = false;
           const queryPagination = `?page=${this.currPage}&limit=${this.limit}`;
 
           const {
@@ -251,12 +286,14 @@ export default {
 
           this.totalPage = Math.ceil(totalData / this.limit);
           this.offset = this.limit * this.currPage - this.limit;
-          
+
           return (this.items = data.map((item) => {
             item.isEdit = false;
             return item;
           }));
         } else {
+          console.log("here");
+          console.log(this.items);
           return this.items;
         }
       } catch (error) {
@@ -422,8 +459,10 @@ export default {
       this.togle = !this.togle;
     },
     handleTogleEdit(e) {
+      console.log("clicked");
       e.preventDefault();
       const _id = e.target.value;
+      console.log(_id);
       this.updateLetter = "";
       this.updateFrequency = "";
 
@@ -437,8 +476,13 @@ export default {
       });
     },
     async handleSearch() {
+      this.searchMode = true;
       let filter = {};
       const { searchLetter, searchFrequency } = this;
+      if (!searchLetter && !searchFrequency) {
+        this.searchMode = false;
+        this.currPageBrowse = 1;
+      }
       if (searchFrequency && searchLetter) {
         filter = { letter: searchLetter, frequency: searchFrequency };
       } else if (searchLetter) {
@@ -448,8 +492,19 @@ export default {
       }
       console.log(filter);
       try {
-        const { data } = await this.axios.post(`${this.url}search`, filter);
+        const queryPagination = `?page=${this.currPageBrowse}&limit=${this.limit}`;
+
+        const {
+          data: { data, totalData },
+        } = await this.axios.post(
+          `${this.url}search${queryPagination}`,
+          filter
+        );
         console.log(data);
+
+        this.totalPage = Math.ceil(totalData / this.limit);
+        this.offset = this.limit * this.currPage - this.limit;
+
         this.items = [...data];
       } catch (error) {
         console.log(error);
@@ -462,17 +517,29 @@ export default {
       }
     },
     changePage(e) {
-      this.currPage = Number(e.target.value);
-      console.log(this.currPage);
-      console.log(typeof this.currPage);
+      if (this.searchMode) {
+        this.currPageBrowse = Number(e.target.value);
+        this.handleSearch();
+        console.log(this.currPageBrowse);
+      } else {
+        this.currPage = Number(e.target.value);
+      }
     },
     handlePrevious() {
-      this.currPage -= 1;
-      console.log(this.currPage);
+      if (this.searchMode) {
+        this.currPageBrowse -= 1;
+        this.handleSearch();
+      } else {
+        this.currPage -= 1;
+      }
     },
     handleNext() {
-      this.currPage += 1;
-      console.log(typeof this.currPage);
+      if (this.searchMode) {
+        this.currPageBrowse += 1;
+        this.handleSearch();
+      } else {
+        this.currPage += 1;
+      }
     },
   },
 };
