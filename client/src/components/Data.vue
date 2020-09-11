@@ -97,7 +97,7 @@
             <tbody>
               <tr v-for="(item,index) of items " :key="item._id">
                 <template v-if="!item.isEdit">
-                  <th scope="row">{{index+1}}</th>
+                  <th scope="row">{{offset+index+1}}</th>
                   <td>{{item.letter}}</td>
                   <td>{{item.frequency}}</td>
                   <td class="d-flex justify-content-center">
@@ -116,7 +116,7 @@
                 </template>
 
                 <template v-else>
-                  <th scope="row">{{index+1}}</th>
+                  <th scope="row">{{offset+index+1}}</th>
                   <td>
                     <div class="form-row">
                       <input
@@ -163,8 +163,8 @@
           <div class="mt-5 mb-5 text-black-50">
             <nav aria-label="...">
               <ul class="pagination justify-content-center">
-                <li class="page-item disabled" :class="{disabled:currPage==1}" >
-                  <button class="page-link" @click='handlePrevious'>Previous</button>
+                <li class="page-item" :class="{disabled:currPage==1}">
+                  <button class="page-link" @click="handlePrevious">Previous</button>
                 </li>
 
                 <template>
@@ -172,14 +172,19 @@
                     class="page-item"
                     v-for="(page,index) of totalPage"
                     :key="index"
-                    :class="{active:page==currPage}" 
+                    :class="{active:page==currPage}"
                   >
-                    <button  type="button" class="page-link" :value="page" @click="changePage">{{index+1}}</button>
+                    <button
+                      type="button"
+                      class="page-link"
+                      :value="page"
+                      @click="changePage"
+                    >{{index+1}}</button>
                   </li>
                 </template>
 
-                <li class="page-item is-disabled"  :class="{disabled:currPage==totalPage}" >
-                  <button  type="button" class="page-link" @click="changePage">Next</button>
+                <li class="page-item" :class="{disabled:currPage==totalPage}">
+                  <button type="button" class="page-link" @click="handleNext">Next</button>
                 </li>
               </ul>
             </nav>
@@ -223,7 +228,7 @@ export default {
       currPage: 1,
       limit: 5,
       totalPage: null,
-      itemInPage: null,
+      offset: 0,
     };
   },
   watch: {
@@ -245,6 +250,8 @@ export default {
           } = await this.axios.get(`${this.url}${queryPagination}`);
 
           this.totalPage = Math.ceil(totalData / this.limit);
+          this.offset = this.limit * this.currPage - this.limit;
+          
           return (this.items = data.map((item) => {
             item.isEdit = false;
             return item;
@@ -455,12 +462,19 @@ export default {
       }
     },
     changePage(e) {
-      this.currPage =e.target.value
+      this.currPage = Number(e.target.value);
+      console.log(this.currPage);
+      console.log(typeof this.currPage);
     },
-    handlePrevious(){
-      this.currpage=+1
-    }
-  },  
+    handlePrevious() {
+      this.currPage -= 1;
+      console.log(this.currPage);
+    },
+    handleNext() {
+      this.currPage += 1;
+      console.log(typeof this.currPage);
+    },
+  },
 };
 </script>
 <style scoped>
