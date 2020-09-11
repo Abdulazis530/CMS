@@ -163,27 +163,24 @@
           <div class="mt-5 mb-5 text-black-50">
             <nav aria-label="...">
               <ul class="pagination justify-content-center">
-    
-                  <li class="page-item disabled" :class="{disabled:currPage==1}">
-                    <span class="page-link">Previous</span>
-                  </li>
+                <li class="page-item disabled" :class="{disabled:currPage==1}" >
+                  <button class="page-link" @click='handlePrevious'>Previous</button>
+                </li>
 
                 <template>
                   <li
                     class="page-item"
                     v-for="(page,index) of totalPage"
                     :key="index"
-                    :class="{active:page===currPage}"
+                    :class="{active:page==currPage}" 
                   >
-                    <a class="page-link" href="#">{{index+1}}</a>
+                    <button  type="button" class="page-link" :value="page" @click="changePage">{{index+1}}</button>
                   </li>
                 </template>
-               
 
-                <li class="page-item is-disabled" :class="{disabled:currPage==totalPage}">
-                  <a class="page-link" href="#">Next</a>
+                <li class="page-item is-disabled"  :class="{disabled:currPage==totalPage}" >
+                  <button  type="button" class="page-link" @click="changePage">Next</button>
                 </li>
-       
               </ul>
             </nav>
           </div>
@@ -457,7 +454,13 @@ export default {
         });
       }
     },
-  },
+    changePage(e) {
+      this.currPage =e.target.value
+    },
+    handlePrevious(){
+      this.currpage=+1
+    }
+  },  
 };
 </script>
 <style scoped>
