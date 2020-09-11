@@ -163,26 +163,27 @@
           <div class="mt-5 mb-5 text-black-50">
             <nav aria-label="...">
               <ul class="pagination justify-content-center">
-                <template v-if="page==1">
-                  <li class="page-item disabled">
+    
+                  <li class="page-item disabled" :class="{disabled:currPage==1}">
                     <span class="page-link">Previous</span>
                   </li>
-                </template>
-                <template v-else>
-                  <li class="page-item">
-                    <span class="page-link">Previous</span>
-                  </li>
-                </template>
 
                 <template>
-                  <li class="page-item" v-for="(allPage,index) of totalPage" :key="index">
+                  <li
+                    class="page-item"
+                    v-for="(page,index) of totalPage"
+                    :key="index"
+                    :class="{active:page===currPage}"
+                  >
                     <a class="page-link" href="#">{{index+1}}</a>
                   </li>
                 </template>
+               
 
-                <li class="page-item">
+                <li class="page-item is-disabled" :class="{disabled:currPage==totalPage}">
                   <a class="page-link" href="#">Next</a>
                 </li>
+       
               </ul>
             </nav>
           </div>
@@ -222,7 +223,7 @@ export default {
       url: "http://localhost:3000/api/data/",
       togle: false,
       items: null,
-      page: 4,
+      currPage: 1,
       limit: 5,
       totalPage: null,
       itemInPage: null,
@@ -240,20 +241,17 @@ export default {
     async loadData() {
       try {
         if (!this.searchLetter && !this.searchFrequency) {
-          const queryPagination = `?page=${this.page}&limit=${this.limit}`;
+          const queryPagination = `?page=${this.currPage}&limit=${this.limit}`;
 
           const {
             data: { data, totalData },
           } = await this.axios.get(`${this.url}${queryPagination}`);
 
           this.totalPage = Math.ceil(totalData / this.limit);
-
-
-          return this.items = data.map((item) => {
+          return (this.items = data.map((item) => {
             item.isEdit = false;
             return item;
-          })
-       
+          }));
         } else {
           return this.items;
         }
@@ -302,12 +300,12 @@ export default {
             showConfirmButton: false,
             timer: 1200,
           });
-          
+
           this.items.push(data);
-          if(this.items.length>5){
+          if (this.items.length > 5) {
             this.$asyncComputed.loadData.update();
           }
-          console.log(this.items.length)
+          console.log(this.items.length);
 
           this.newLetter = "";
           this.newFrequency = "";
@@ -342,6 +340,9 @@ export default {
         if (confirmationDelete.value) {
           await this.axios.delete(`${this.url}${_id}`);
           this.items = this.items.filter((item) => item._id !== _id);
+          if (this.items.length < 5) {
+            this.$asyncComputed.loadData.update();
+          }
         }
       } catch (error) {
         console.log(error);
