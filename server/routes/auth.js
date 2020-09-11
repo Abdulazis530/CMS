@@ -10,7 +10,6 @@ const secret = process.env.TOKEN_SECRET
 
 /* GET users listing. */
 
-
 router.get('/list', async (req, res) => {
 
   let response = []
@@ -60,15 +59,14 @@ router.post('/login', async (req, res, next) => {
 
   let response = { data: {}, token: null, message: "" }
   const { email, password } = req.body
-  console.log(req.body)
+ 
   try {
     const user = await User.findOne({ email })
     if (!user) {
       response.message = 'Email or password wrong!'
       return res.status(200).json(response)
     }
-    console.log(password)
-    console.log(user.password)
+ 
     const check = await bcrypt.compare(password, user.password)
  
     if (check) {
@@ -79,7 +77,7 @@ router.post('/login', async (req, res, next) => {
         response.token = user.token
         res.status(201).json(response)
       } else {
-        console.log('here')
+
         const newToken = jwt.sign({ email }, secret)
         const updateUser = await User.updateOne({ email: user.email }, { token: newToken })
         response.data.email = email
@@ -107,16 +105,20 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.post('/check', async (req, res, next) => {
+  
   const token = req.header("Authorization")
+
   let response = {
     valid: false
   };
 
   try {
     const decoded = jwt.verify(token, secret);
-    if (!decoded) return res.status(400).json(response)
+    if (!decoded) return res.status(200).json(response)
+
     const user = await User.findOne({ email: decoded.email })
-    if (!user) return res.status(400).json(response)
+    if (!user) return res.status(200).json(response)
+
     response.valid = true
     res.status(200).json(response)
 
@@ -129,9 +131,8 @@ router.post('/check', async (req, res, next) => {
 
 
 router.get('/destroy', async (req, res, next) => {
-  console.log(req.header)
   const token = req.header("Authorization")
-  console.log(token)
+
   let response = {
     logout: false
   };
@@ -142,6 +143,7 @@ router.get('/destroy', async (req, res, next) => {
 
       const user = await User.findOneAndUpdate({ email: decoded.email },{ token: undefined })
       if (!user) return res.status(500).json(response)
+      
       response.logout = true
       res.status(200).json(response)
 

@@ -61,7 +61,7 @@ export default {
         if (logout) {
           localStorage.removeItem("email");
           localStorage.removeItem("Authorization");
-          this.$router.push("/login");
+          this.$router.push("/");
         }
       } catch (error) {
         console.log(error);
