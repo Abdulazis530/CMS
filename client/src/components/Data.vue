@@ -343,10 +343,16 @@ export default {
           });
 
           this.items.push(data);
-          if (this.items.length > 5) {
-            this.$asyncComputed.loadData.update();
+
+          if (!this.searchMode) {
+            if (this.items.length > 5) {
+              this.$asyncComputed.loadData.update();
+            }
+          } else {
+            if (this.items.length > 5) {
+              this.handleSearch();
+            }
           }
-          console.log(this.items.length);
 
           this.newLetter = "";
           this.newFrequency = "";
@@ -381,9 +387,21 @@ export default {
         if (confirmationDelete.value) {
           await this.axios.delete(`${this.url}${_id}`);
           this.items = this.items.filter((item) => item._id !== _id);
-          if (this.items.length < 5) {
-            this.$asyncComputed.loadData.update();
+
+          if (!this.searchMode) {
+            if (this.items.length < 5) {
+              this.$asyncComputed.loadData.update();
+            }
+          }else{
+             if (this.items.length < 5) {
+              this.handleSearch()
+            }
           }
+
+          this.newLetter = "";
+          this.newFrequency = "";
+          this.errorLetter = "";
+          this.errorFrequency = "";
         }
       } catch (error) {
         console.log(error);
@@ -462,7 +480,7 @@ export default {
       console.log("clicked");
       e.preventDefault();
       const _id = e.target.value;
-      console.log(_id);
+
       this.updateLetter = "";
       this.updateFrequency = "";
 
