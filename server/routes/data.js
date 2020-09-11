@@ -40,17 +40,29 @@ router.post('/search', async (req, res, next) => {
 
 // #2 READ  localhost 3000/api/data 
 router.get("/", async (req, res, next) => {
-    let response = []
+    let page=req.query.page || 1
+    let limit=req.query.limit || 0
+    let offset=page*limit-limit
+    console.log(req.query.page)
+    console.log(req.query.limit)
     try {
         const data = await Data.find()
-        data.forEach(field => {
+        const totalData=data.length
+        let response={
+            totalData,
+            data:[]
+        }
+        const paginatedData=await Data.find().limit(limit).skip(offset)
+        
+        paginatedData.forEach(field => {
             const { _id, letter, frequency } = field
-            response.push({
+            response.data.push({
                 _id,
                 letter,
                 frequency
             })
         })
+        
         res.status(200).json(response)
     } catch (error) {
         console.log(error)

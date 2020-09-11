@@ -67,21 +67,33 @@ describe('>>>TESTING DATA API<<<', () => {
     });
 
     it('Should list ALL data from database /api/data/ GET', async () => {
-        const data = await chai.request(server).get('/api/data')
+        const list = await chai.request(server).get('/api/data')
 
-        data.should.have.status(200);
-        data.body.should.be.a('array');
-        data.body[0].should.have.property('_id');
-        data.body[0].should.have.property('letter');
-        data.body[0].should.have.property('frequency');
-        data.body[0].letter.should.equal('A');
-        data.body[0].frequency.should.equal(1.2);
+
+        list.should.have.status(200);
+        list.should.be.a.json;
+        list.body.data.should.be.a('array')
+        list.body.should.have.property('totalData');
+        list.body.should.have.property('data');
+        list.body.data[0].should.have.property('_id');
+        list.body.data[0].should.have.property('letter');
+        list.body.data[0].should.have.property('frequency');
+        list.body.data[0].letter.should.equal('A');
+        list.body.data[0].frequency.should.equal(1.2);
+        // data.should.have.status(200);
+        // data.body.should.be.a('array');
+        // data.body[0].should.have.property('_id');
+        // data.body[0].should.have.property('letter');
+        // data.body[0].should.have.property('frequency');
+        // data.body[0].letter.should.equal('A');
+        // data.body[0].frequency.should.equal(1.2);
     });
 
 
     it('Should edit a specific data with targeted id  /api/data/:id PUT', async () => {
         const data = await chai.request(server).get('/api/data');
-        const id = data.body[0]._id;
+        console.log('THIS IS DATA:',data)
+        const id = data.body.data[0]._id;
 
         const takeEditedData = await chai.request(server).put(`/api/data/${id}`).send({ 'letter': 'C', 'frequency': 12.2 });
 
@@ -137,7 +149,7 @@ describe('>>>TESTING DATA API<<<', () => {
 
     it('Should find a specific data with id from database when accessing  /api/data/id GET', async () => {
         const data = await chai.request(server).get('/api/data');
-        const id = data.body[0]._id;
+        const id = data.body.data[0]._id;
       
         
         const getData= await chai.request(server).get(`/api/data/${id}`)

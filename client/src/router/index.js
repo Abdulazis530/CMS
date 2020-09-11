@@ -102,7 +102,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
   } else {
-    next() // make sure to always call next()!
+    next() 
   }
 })
 
