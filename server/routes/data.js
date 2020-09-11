@@ -40,11 +40,11 @@ router.post('/search', async (req, res, next) => {
 
 // #2 READ  localhost 3000/api/data 
 router.get("/", async (req, res, next) => {
-    let page=req.query.page || 1
-    let limit=req.query.limit || 0
+    let page=Number(req.query.page) || 1
+    let limit=Number(req.query.limit) || 0
+
     let offset=page*limit-limit
-    console.log(req.query.page)
-    console.log(req.query.limit)
+    
     try {
         const data = await Data.find()
         const totalData=data.length

@@ -159,6 +159,34 @@
               </tr>
             </tbody>
           </table>
+
+          <div class="mt-5 mb-5 text-black-50">
+            <nav aria-label="...">
+              <ul class="pagination justify-content-center">
+                <template v-if="page==1">
+                  <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                  </li>
+                </template>
+                <template v-else>
+                  <li class="page-item">
+                    <span class="page-link">Previous</span>
+                  </li>
+                </template>
+
+                <template>
+                  <li class="page-item" v-for="(allPage,index) of totalPage" :key="index">
+                    <a class="page-link" href="#">{{index+1}}</a>
+                  </li>
+                </template>
+
+                <li class="page-item">
+                  <a class="page-link" href="#">Next</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
           <div class="d-flex mt-5 mb-5 text-black-50 flex-row bd-highlight justify-content-center">
             <button
               type="button"
@@ -194,6 +222,10 @@ export default {
       url: "http://localhost:3000/api/data/",
       togle: false,
       items: null,
+      page: 4,
+      limit: 5,
+      totalPage: null,
+      itemInPage: null,
     };
   },
   watch: {
@@ -208,11 +240,20 @@ export default {
     async loadData() {
       try {
         if (!this.searchLetter && !this.searchFrequency) {
-          const { data } = await this.axios.get(this.url);
-          return (this.items = data.map((item) => {
+          const queryPagination = `?page=${this.page}&limit=${this.limit}`;
+
+          const {
+            data: { data, totalData },
+          } = await this.axios.get(`${this.url}${queryPagination}`);
+
+          this.totalPage = Math.ceil(totalData / this.limit);
+
+
+          return this.items = data.map((item) => {
             item.isEdit = false;
             return item;
-          }));
+          })
+       
         } else {
           return this.items;
         }
@@ -261,8 +302,13 @@ export default {
             showConfirmButton: false,
             timer: 1200,
           });
-
+          
           this.items.push(data);
+          if(this.items.length>5){
+            this.$asyncComputed.loadData.update();
+          }
+          console.log(this.items.length)
+
           this.newLetter = "";
           this.newFrequency = "";
           this.errorLetter = "";
@@ -530,17 +576,7 @@ export default {
 .container-card {
   margin-top: 5vh;
 }
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+
 a {
   color: rgb(53, 50, 50);
 }
