@@ -1,14 +1,9 @@
 <template>
   <div>
-    <div class="jumbotron jumbotron-fluid">
-      <div class="container">
-        <h1 class="display-3 text-success">Content Management System</h1>
-        <p
-          class="lead text-dark"
-        >This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
-      </div>
-    </div>
+    <Navbar :isLoggedIn="isLoggedIn"></Navbar>
 
+    <Jumbotron></Jumbotron>
+>
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3 justify-content-center w-75">
@@ -23,7 +18,7 @@
               </span>
             </router-link>
 
-            <router-link to="/pie"  class="childYellow p-1 mt-2 bd-highlight">
+            <router-link to="/pie" class="childYellow p-1 mt-2 bd-highlight">
               <i class="fas fa-chart-pie fa-sm"></i>
               <br />
               <span>
@@ -31,7 +26,7 @@
               </span>
             </router-link>
 
-            <router-link to="/bar"  class="childAqua p-1 mt-2 bd-highlight">
+            <router-link to="/bar" class="childAqua p-1 mt-2 bd-highlight">
               <i class="far fa-chart-bar fa-sm"></i>
               <br />
               <span>
@@ -39,7 +34,7 @@
               </span>
             </router-link>
 
-            <router-link to="/map"  class="childGreen p-1 mt-2 bd-highlight">
+            <router-link to="/map" class="childGreen p-1 mt-2 bd-highlight">
               <i class="fas fa-map-marked-alt fa-sm"></i>
               <br />
               <span>
@@ -59,27 +54,22 @@
 </template>
 
 <script>
-
+import Navbar from "./Navbar.vue";
+import Jumbotron from "./Jumbotron";
 
 export default {
   name: "Index",
-}
+  components: { Navbar, Jumbotron },
+  data() {
+    return {
+      isLoggedIn: false,
+    };
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.jumbotron {
-  background-image: url("../assets/background2.jpg");
-  background-position: center bottom fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-
-  background-color: rgba(255, 255, 255, 0.8);
-  box-shadow: 0px 5px 10px rgba(1, 5, 1, 0.6);
-}
 
 .card {
   background-color: rgba(255, 255, 255, 0.8);

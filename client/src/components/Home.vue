@@ -1,18 +1,18 @@
 <template>
   <div>
     <Navbar :isLoggedIn="isLoggedIn"></Navbar>
-
+    <Jumbotron></Jumbotron>
+    
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3 justify-content-center w-75">
         <div class="card-header">
           Welcome {{user}}
           <br />
-          <span class="lead text-dark-50 font-weight-bolder ">Select Feature</span>
+          <span class="lead text-dark-50 font-weight-bolder">Select Feature</span>
         </div>
         <div class="card-body text-dark">
           <div class="d-flex flex-column bd-highlight">
-
             <router-link to="/data" class="childTomato p-1 bd-highlight">
               <i class="fas fa-database fa-sm"></i>
               <br />
@@ -46,13 +46,14 @@
 
 <script>
 import Navbar from "./Navbar.vue";
+import Jumbotron from "./Jumbotron";
 
 export default {
   name: "Home",
-  components: { Navbar },
+  components: { Navbar,Jumbotron },
   data() {
     return {
-      user:localStorage.getItem('email'),
+      user: localStorage.getItem("email"),
       isLoggedIn: true,
     };
   },
@@ -61,18 +62,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.jumbotron {
-  background-image: url("../assets/background2.jpg");
-  background-position: center bottom fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
 
-  background-color: rgba(255, 255, 255, 0.8);
-  box-shadow: 0px 5px 10px rgba(1, 5, 1, 0.6);
-}
 
 .card {
   background-color: rgba(255, 255, 255, 0.8);
@@ -86,7 +76,6 @@ export default {
 }
 .childGreen,
 .childYellow,
-.childAqua,
 .childTomato {
   border-radius: 8px;
   font-size: 1.5em;
@@ -109,14 +98,7 @@ export default {
   transform: scale(1.02);
   margin-bottom: 1%;
 }
-.childAqua {
-  background-color: rgba(29, 211, 189, 1);
-}
-.childAqua:hover {
-  background-color: rgba(29, 211, 189, 0.6);
-  transform: scale(1.02);
-  margin-bottom: 1%;
-}
+
 .childTomato {
   background-color: rgba(160, 27, 27, 1);
 }

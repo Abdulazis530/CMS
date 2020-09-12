@@ -55,7 +55,10 @@ const routes = [
   {
     path: '/data',
     name: 'data',
-    component: () => import('../components/Data')
+    component: () => import('../components/Data'),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/dataDate',

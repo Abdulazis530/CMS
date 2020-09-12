@@ -1,6 +1,8 @@
 <template>
   <div>
     <Navbar :isLoggedIn="isLoggedIn"></Navbar>
+    <Jumbotron></Jumbotron>
+
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3">
@@ -51,10 +53,13 @@
 
 <script>
 import Navbar from "./Navbar";
+import Jumbotron from "./Jumbotron";
+
 export default {
   name: "login",
   components: {
     Navbar,
+    Jumbotron,
   },
   data() {
     return {
@@ -118,18 +123,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.jumbotron {
-  background-image: url("../assets/background2.jpg");
-  background-position: center bottom fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
 
-  background-color: rgba(255, 255, 255, 0.8);
-  box-shadow: 0px 5px 10px rgba(1, 5, 1, 0.6);
-}
 .error {
   color: red;
   font-size: 1.2rem;
@@ -145,43 +139,7 @@ export default {
   font-size: 1.5em;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
 }
-.childGreen,
-.childYellow,
-.childAqua,
-.childTomato {
-  border-radius: 8px;
-  font-size: 1.5em;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
-  transition: transform 0.2s;
-}
-.childGreen {
-  background-color: rgb(83, 192, 140, 1);
-}
-.childGreen:hover {
-  background-color: rgba(83, 192, 140, 0.6);
-  transform: scale(1.02);
-}
-.childYellow {
-  background-color: rgba(251, 212, 109, 1);
-}
-.childYellow:hover {
-  background-color: rgba(251, 212, 109, 0.6);
-  transform: scale(1.02);
-}
-.childAqua {
-  background-color: rgba(29, 211, 189, 1);
-}
-.childAqua:hover {
-  background-color: rgba(29, 211, 189, 0.6);
-  transform: scale(1.02);
-}
-.childTomato {
-  background-color: rgba(160, 27, 27, 1);
-}
-.childTomato:hover {
-  background-color: rgba(207, 27, 27, 0.6);
-  transform: scale(1.02);
-}
+
 .card-header {
   background-color: rgba(0, 0, 0, 0.6);
 
