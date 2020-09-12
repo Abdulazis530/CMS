@@ -26,61 +26,70 @@ describe('>>>TESTING DATA DATE API<<<', () => {
 
     it('Should search data from user input when accessing /api/datadate/search', async () => {
         await chai.request(server).post('/api/datadate').send({ 'letter': '2018-12-20', 'frequency': 1.2 });
-    
+
         //testing search feature with input data only frequency
         const searchData1 = await chai.request(server).post('/api/datadate/search').send({ 'frequency': 1.2 });
         searchData1.should.have.status(200);
         searchData1.should.be.a.json;
-        searchData1.body.should.be.a('array');
-        searchData1.body.length.should.equal(1);
-        searchData1.body[0].should.have.property('_id');
-        searchData1.body[0].should.have.property('letter');
-        searchData1.body[0].should.have.property('frequency');
-        searchData1.body[0].letter.should.equal('2018-12-20');
-        searchData1.body[0].frequency.should.equal(1.2);
+        searchData1.body.should.have.property('totalData');
+        searchData1.body.should.have.property('data');
+        searchData1.body.data.should.be.a('array');
+        searchData1.body.data.length.should.equal(1);
+        searchData1.body.data[0].should.have.property('_id');
+        searchData1.body.data[0].should.have.property('letter');
+        searchData1.body.data[0].should.have.property('frequency');
+        searchData1.body.data[0].letter.should.equal('2018-12-20');
+        searchData1.body.data[0].frequency.should.equal(1.2);
 
         //testing search feature with input data only letter
         const searchData2 = await chai.request(server).post('/api/datadate/search').send({ 'letter': '2017-12-31' });
         searchData2.should.have.status(200);
         searchData2.should.be.a.json;
-        searchData2.body.should.be.a('array');
-        searchData2.body.length.should.equal(1);
-        searchData2.body[0].should.have.property('_id');
-        searchData2.body[0].should.have.property('letter');
-        searchData2.body[0].should.have.property('frequency');
-        searchData2.body[0].letter.should.equal('2017-12-31');
-        searchData2.body[0].frequency.should.equal(1.1);
+        searchData2.body.should.have.property('totalData');
+        searchData2.body.should.have.property('data');
+        searchData2.body.data.should.be.a('array');
+        searchData2.body.data.length.should.equal(1);
+        searchData2.body.data[0].should.have.property('_id');
+        searchData2.body.data[0].should.have.property('letter');
+        searchData2.body.data[0].should.have.property('frequency');
+        searchData2.body.data[0].letter.should.equal('2017-12-31');
+        searchData2.body.data[0].frequency.should.equal(1.1);
 
         //testting search feature with input data letter and frequency
         const searchData3 = await chai.request(server).post('/api/datadate/search').send({ 'letter': '2018-12-20', 'frequency': 1.2 });
 
         searchData3.should.have.status(200);
         searchData3.should.be.a.json;
-        searchData3.body.should.be.a('array');
-        searchData3.body.length.should.equal(1);
-        searchData3.body[0].should.have.property('_id');
-        searchData3.body[0].should.have.property('letter');
-        searchData3.body[0].should.have.property('frequency');
-        searchData3.body[0].letter.should.equal('2018-12-20');
-        searchData3.body[0].frequency.should.equal(1.2);
+        searchData3.body.should.have.property('totalData');
+        searchData3.body.should.have.property('data');
+        searchData3.body.data.should.be.a('array');
+        searchData3.body.data.length.should.equal(1);
+        searchData3.body.data[0].should.have.property('_id');
+        searchData3.body.data[0].should.have.property('letter');
+        searchData3.body.data[0].should.have.property('frequency');
+        searchData3.body.data[0].letter.should.equal('2018-12-20');
+        searchData3.body.data[0].frequency.should.equal(1.2);
     });
 
     it('Should list ALL data from database /api/datadate/ GET', async () => {
         const data = await chai.request(server).get('/api/datadate')
 
         data.should.have.status(200);
-        data.body.should.be.a('array');
-        data.body[0].should.have.property('_id');
-        data.body[0].should.have.property('letter');
-        data.body[0].should.have.property('frequency');
-        data.body[0].letter.should.equal('2017-12-31');
-        data.body[0].frequency.should.equal(1.1);
+        data.should.be.a.json;
+        data.body.data.should.be.a('array')
+        data.body.should.have.property('totalData');
+        data.body.should.have.property('data');
+        data.body.data[0].should.have.property('_id');
+        data.body.data[0].should.have.property('letter');
+        data.body.data[0].should.have.property('frequency');
+        data.body.data[0].letter.should.equal('2017-12-31');
+        data.body.data[0].frequency.should.equal(1.1);
     });
 
 
     it('Should edit a specific data with targeted id  /api/datadate/:id PUT', async () => {
         const data = await chai.request(server).get('/api/datadate');
-        const id = data.body[0]._id;
+        const id = data.body.data[0]._id;
 
         const takeEditedData = await chai.request(server).put(`/api/datadate/${id}`).send({ 'letter': '2017-11-31', 'frequency': 12.2 });
 
@@ -117,9 +126,9 @@ describe('>>>TESTING DATA DATE API<<<', () => {
 
     it('Should Delete a specific data with id from database when accessing  /api/datadate/id DELETE', async () => {
         const addedData = await chai.request(server).post('/api/datadate/').send({ 'letter': '2020-12-23', 'frequency': 1.4 });
-        const id= addedData.body.data._id
-        
-        const delData= await chai.request(server).delete(`/api/datadate/${id}`)
+        const id = addedData.body.data._id
+
+        const delData = await chai.request(server).delete(`/api/datadate/${id}`)
         delData.should.have.status(200);
         delData.should.be.json;
         delData.body.should.have.property('success');
@@ -136,11 +145,11 @@ describe('>>>TESTING DATA DATE API<<<', () => {
 
     it('Should find a specific data with id from database when accessing  /api/datadate/id GET', async () => {
         const data = await chai.request(server).get('/api/datadate');
-        const id = data.body[0]._id;
-      
-        
-        const getData= await chai.request(server).get(`/api/datadate/${id}`)
-       
+        const id = data.body.data[0]._id;
+
+
+        const getData = await chai.request(server).get(`/api/datadate/${id}`)
+
         getData.should.have.status(200);
         getData.should.be.json;
         getData.body.should.have.property('success');

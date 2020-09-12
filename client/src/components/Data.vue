@@ -508,8 +508,6 @@ export default {
         this.searchMode = false;
         this.currPageBrowse = 1;
       } else if (this.searchLetter != "" && !isNaN(this.searchLetter)) {
-        console.log(!isNaN(this.searchLetter));
-        console.log("maosk sni");
         this.errorSearchLetter = "Input should be string!";
       } else if (this.searchFrequency != "" && isNaN(this.searchFrequency)) {
         this.errorSearchFrequency = "input should be number!";
@@ -586,7 +584,7 @@ export default {
   color: red;
 }
 .card-custom {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(225, 225, 255, 0.7);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);
 }
 .table {

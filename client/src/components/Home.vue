@@ -66,7 +66,7 @@ export default {
 
 
 .card {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(225, 225, 255, 0.7);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);
   margin-left: 12%;
 }

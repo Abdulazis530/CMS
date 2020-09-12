@@ -38,7 +38,7 @@
 
             <div class="d-flex flex-column mt-5 mb-5 align-items-center text-black-50">
               <button type="submit" class="btn-login p-2 mb-2" @click="handleLogin">Login</button>
-              <span class="p-2 text-white font-weight-bold lead">
+              <span class="p-2 text-success font-weight-bold lead">
                 Don't have an account?
                 <router-link to="/signup">Sign Up</router-link>
               </span>
@@ -130,13 +130,16 @@ export default {
   font-weight: bold;
 }
 .card {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(225, 225, 255, 0.8);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);
+  color: black;
 }
 
 .flexCustom {
   transition: transform 0.2s;
   font-size: 1.5em;
+  background-color: rgba(0, 0, 20, 0.7);
+
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
 }
 

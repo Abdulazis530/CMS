@@ -1,13 +1,13 @@
 <template>
   <div>
+    
     <Navbar :isLoggedIn="isLoggedIn"></Navbar>
 
-    <Jumbotron></Jumbotron>
->
+    <Jumbotron></Jumbotron>>
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3 justify-content-center w-75">
-        <div class="card-header">Welcome to Dashboard</div>
+        <div class="card-header" v-if="{user}">Welcome to Dashboard {{user}}</div>
         <div class="card-body text-dark">
           <div class="d-flex flex-column bd-highlight">
             <router-link to="/line" class="childTomato p-1 bd-highlight">
@@ -44,7 +44,7 @@
           </div>
 
           <div class="d-flex flex-row mt-5 bd-highlight justify-content-center text-black-50">
-            <router-link to="/Login" class="btn-login p-2 w-25">Login</router-link>
+            <router-link to="/Login" class="btn-login p-2 w-25" v-if="!user">Login</router-link>
           </div>
         </div>
       </div>
@@ -63,14 +63,15 @@ export default {
   data() {
     return {
       isLoggedIn: false,
+      user: localStorage.getItem("email")
     };
   },
+ 
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 .card {
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);
