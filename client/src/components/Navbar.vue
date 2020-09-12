@@ -19,14 +19,14 @@
           <router-link to="/home" class="nav-link">Home</router-link>
         </li>
 
-        <li class="nav-item">
-          <router-link to="/data" class="nav-link" :class="{active:whatPage==='data'}">Data</router-link>
+        <li class="nav-item" :class="{active:whatPage==='data'}">
+          <router-link to="/data" class="nav-link" >Data</router-link>
         </li>
-        <li class="nav-item">
-          <router-link to="/dataDate" class="nav-link" :class="{active:whatPage==='dataDate'}">Data Date</router-link>
+        <li class="nav-item" :class="{active:whatPage==='dataDate'}">
+          <router-link to="/dataDate" class="nav-link" >Data Date</router-link>
         </li>
-        <li class="nav-item">
-          <router-link to="/maps" class="nav-link" :class="{active:whatPage==='dataMap'}">Maps</router-link>
+        <li class="nav-item" :class="{active:whatPage==='dataMap'}"> 
+          <router-link to="/maps" class="nav-link" >Maps</router-link>
         </li>
         <li class="nav-item dropdown">
           <a

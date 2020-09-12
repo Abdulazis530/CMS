@@ -6,6 +6,6 @@
 
 <script>
 export default {
-    name:'Data Map'
+    name:'DataMap'
 }
 </script>

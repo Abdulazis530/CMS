@@ -3,6 +3,9 @@ import VueRouter from 'vue-router'
 import Index from '../components/Index'
 import axios from 'axios';
 import VueAxios from 'vue-axios'
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+Vue.use(VueSweetalert2)
 
 
 Vue.use(VueAxios, axios)
@@ -54,7 +57,7 @@ const routes = [
   },
   {
     path: '/data',
-    name: 'data',
+    name: 'Data',
     component: () => import('../components/Data'),
     meta: {
       requiresAuth: true
@@ -95,8 +98,10 @@ router.beforeEach(async (to, from, next) => {
         headers
       })
       //check if token still valid (in some case token could expire)
+      console.log(valid)
       if (!valid) {
-        router.push('/')
+        alert('Seem your token is invalid please login again')
+        router.push('/login')
       } else {
         next()
       }

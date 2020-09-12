@@ -2,17 +2,17 @@
   <div>
     <Navbar :isLoggedIn="isLoggedIn" :whatPage="whatPage"></Navbar>
     <div class="container-card container">
-      <div class="card-custom card mb-3">
-        <div class="card-header">DATA BREAD</div>
+      <div class="card-custom card mb-2">
+        <div class="card-header">DATA DATE BREAD</div>
         <div class="card-body text-dark">
           <div>
-            <div class="card-header mt-2">SEARCH DATA</div>
-            <div class="flexCustom d-flex mb-5 flex-row">
+            <div class="card-header mt-2">SEARCH DATA DATE</div>
+            <div class="flexCustom d-flex mb-3 flex-row">
               <div class="p-4 w-50">
-                <label for="inputLetter" class="text-white font-weight-bold">Letter</label>
+                <label for="inputLetter" class="text-white font-weight-bold">Date</label>
                 <input
                   class="form-control form-control-lg"
-                  type="text"
+                  type="date"
                   placeholder="Letter"
                   id="inputLetter"
                   v-model="searchLetter"
@@ -34,6 +34,14 @@
               </div>
             </div>
           </div>
+          <div class="d-flex mb-2 text-black-50 flex-row bd-highlight justify-content-center">
+            <button
+              type="button"
+              class="btn-togle-add p-2 mb-2 text-white"
+              @click="handleReset"
+              v-if="searchMode"
+            >Stop Search</button>
+          </div>
           <transition name="slide-fade">
             <div class="card-custom card mb-5" v-if="togle">
               <div class="card-body text-dark">
@@ -41,10 +49,10 @@
                   <div class="card-header mt-2">ADD DATA</div>
                   <div class="flexCustom d-flex mb-5 flex-row">
                     <div class="p-3 w-50">
-                      <label for="inputNewLetter" class="text-white font-weight-bold">Letter</label>
+                      <label for="inputNewLetter" class="text-white font-weight-bold">Date</label>
                       <input
                         class="form-control form-control-lg"
-                        type="text"
+                        type="date"
                         placeholder="Add new letter here"
                         id="inputNewLetter"
                         v-model="newLetter"
@@ -91,7 +99,7 @@
             <thead>
               <tr>
                 <th scope="col">No</th>
-                <th scope="col">Letter</th>
+                <th scope="col">Date</th>
                 <th scope="col">Frequency</th>
                 <th scope="col">Actions</th>
               </tr>
@@ -124,7 +132,7 @@
                     <div class="form-row">
                       <input
                         id="updateLetter"
-                        type="text"
+                        type="date  "
                         class="form-control"
                         :value="item.letter"
                         required
@@ -224,7 +232,7 @@
             </template>
           </div>
 
-          <div class="d-flex mt-5 mb-5 text-black-50 flex-row bd-highlight justify-content-center">
+          <div class="d-flex mt-5 mb-2 text-black-50 flex-row bd-highlight justify-content-center">
             <button
               type="button"
               class="btn-togle-add p-2 mb-2 text-white"
@@ -239,12 +247,12 @@
 <script>
 import Navbar from "./Navbar.vue";
 export default {
-  name: "Data",
+  name: "DataDate",
   components: { Navbar },
 
   data() {
     return {
-      whatPage: "data",
+      whatPage: "dataDate",
       user: localStorage.getItem("email"),
       isLoggedIn: true,
       searchLetter: "",
@@ -259,7 +267,7 @@ export default {
       newFrequency: "",
       updateLetter: "",
       updateFrequency: "",
-      url: "http://localhost:3000/api/data/",
+      url: "http://localhost:3000/api/datadate/",
       togle: false,
       items: null,
       currPage: 1,
@@ -297,8 +305,6 @@ export default {
             return item;
           }));
         } else {
-          console.log("here");
-          console.log(this.items);
           return this.items;
         }
       } catch (error) {
@@ -320,17 +326,12 @@ export default {
         //VALIDATION INPUT
 
         if (!this.newFrequency && !this.newLetter) {
-          this.errorLetter = "Input letter cannot empty!";
+          this.errorLetter = "Input Date cannot empty!";
           this.errorFrequency = "Input Frequency cannot empty!";
         } else if (!this.newLetter) {
-          this.errorLetter = "Input letter cannot empty!";
+          this.errorLetter = "Input Date cannot empty!";
         } else if (!this.newFrequency) {
           this.errorFrequency = "Input Frequency cannot empty!";
-        } else if (!isNaN(this.newLetter) && isNaN(this.newFrequency)) {
-          this.errorLetter = "Input should be string!";
-          this.errorFrequency = "input should be number!";
-        } else if (!isNaN(this.newLetter)) {
-          this.errorLetter = "Input should be string!";
         } else if (isNaN(this.newFrequency)) {
           this.errorFrequency = "input should be number!";
         } else {
@@ -432,11 +433,6 @@ export default {
           this.errorUpdateLetter = "Input letter cannot empty!";
         } else if (!this.updateFrequency) {
           this.errorUpdateFrequency = "Input Frequency cannot empty!";
-        } else if (!isNaN(this.updateLetter) && isNaN(this.updateFrequency)) {
-          this.errorUpdateLetter = "Input should be string!";
-          this.errorUpdateFrequency = "input should be number!";
-        } else if (!isNaN(this.updateLetter)) {
-          this.errorUpdateLetter = "Input should be string!";
         } else if (isNaN(this.updateFrequency)) {
           this.errorUpdateFrequency = "input should be number!";
         } else {
@@ -507,8 +503,6 @@ export default {
         this.errorSearchFrequency = "";
         this.searchMode = false;
         this.currPageBrowse = 1;
-      } else if (this.searchLetter != "" && !isNaN(this.searchLetter)) {
-        this.errorSearchLetter = "Input should be string!";
       } else if (this.searchFrequency != "" && isNaN(this.searchFrequency)) {
         this.errorSearchFrequency = "input should be number!";
       } else {
@@ -575,6 +569,13 @@ export default {
       } else {
         this.currPage += 1;
       }
+    },
+   async handleReset() {
+     console.log('duh')
+      this.searchMode = false;
+      this.searchLetter=""
+      this.searchFrequency=""
+      this.$asyncComputed.loadData.update();
     },
   },
 };

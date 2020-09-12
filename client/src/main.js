@@ -3,8 +3,8 @@ import App from './App.vue'
 import router from './router'
 import axios from 'axios';
 import VueSweetalert2 from 'vue-sweetalert2';
-import VueAxios from 'vue-axios'
 import 'sweetalert2/dist/sweetalert2.min.css';
+import VueAxios from 'vue-axios'
 import AsyncComputed from 'vue-async-computed'
 import VueGoogleCharts from 'vue-google-charts'
 
