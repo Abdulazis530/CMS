@@ -18,6 +18,7 @@
                   v-model="searchLetter"
                   required
                 />
+                <p class="error" v-if="errorSearchLetter.length>0">{{errorSearchLetter}}</p>
               </div>
               <div class="p-4 w-50">
                 <label for="inputFrequency" class="text-white font-weight-bold">Frequency</label>
@@ -29,6 +30,7 @@
                   v-model="searchFrequency"
                   required
                 />
+                <p class="error" v-if="errorSearchFrequency.length>0">{{errorSearchFrequency}}</p>
               </div>
             </div>
           </div>
@@ -242,7 +244,7 @@ export default {
 
   data() {
     return {
-      whatPage:'data',
+      whatPage: "data",
       user: localStorage.getItem("email"),
       isLoggedIn: true,
       searchLetter: "",
@@ -251,6 +253,8 @@ export default {
       errorFrequency: "",
       errorUpdateLetter: "",
       errorUpdateFrequency: "",
+      errorSearchLetter: "",
+      errorSearchFrequency: "",
       newLetter: "",
       newFrequency: "",
       updateLetter: "",
@@ -393,9 +397,9 @@ export default {
             if (this.items.length < 5) {
               this.$asyncComputed.loadData.update();
             }
-          }else{
-             if (this.items.length < 5) {
-              this.handleSearch()
+          } else {
+            if (this.items.length < 5) {
+              this.handleSearch();
             }
           }
 
@@ -497,42 +501,56 @@ export default {
     async handleSearch() {
       this.searchMode = true;
       let filter = {};
-      const { searchLetter, searchFrequency } = this;
-      if (!searchLetter && !searchFrequency) {
+
+      if (!this.searchFrequency && !this.searchLetter) {
+        this.errorSearchLetter = "";
+        this.errorSearchFrequency = "";
         this.searchMode = false;
         this.currPageBrowse = 1;
-      }
-      if (searchFrequency && searchLetter) {
-        filter = { letter: searchLetter, frequency: searchFrequency };
-      } else if (searchLetter) {
-        filter = { letter: searchLetter };
-      } else if (searchFrequency) {
-        filter = { frequency: searchFrequency };
-      }
-      console.log(filter);
-      try {
-        const queryPagination = `?page=${this.currPageBrowse}&limit=${this.limit}`;
+      } else if (this.searchLetter != "" && !isNaN(this.searchLetter)) {
+        console.log(!isNaN(this.searchLetter));
+        console.log("maosk sni");
+        this.errorSearchLetter = "Input should be string!";
+      } else if (this.searchFrequency != "" && isNaN(this.searchFrequency)) {
+        this.errorSearchFrequency = "input should be number!";
+      } else {
+        this.errorSearchLetter = "";
+        this.errorSearchFrequency = "";
+        if (this.searchFrequency && this.searchLetter) {
+          filter = {
+            letter: this.searchLetter,
+            frequency: this.searchFrequency,
+          };
+        } else if (this.searchLetter) {
+          filter = { letter: this.searchLetter };
+        } else if (this.searchFrequency) {
+          filter = { frequency: this.searchFrequency };
+        }
+        console.log(filter);
+        try {
+          const queryPagination = `?page=${this.currPageBrowse}&limit=${this.limit}`;
 
-        const {
-          data: { data, totalData },
-        } = await this.axios.post(
-          `${this.url}search${queryPagination}`,
-          filter
-        );
-        console.log(data);
+          const {
+            data: { data, totalData },
+          } = await this.axios.post(
+            `${this.url}search${queryPagination}`,
+            filter
+          );
+          console.log(data);
 
-        this.totalPage = Math.ceil(totalData / this.limit);
-        this.offset = this.limit * this.currPage - this.limit;
+          this.totalPage = Math.ceil(totalData / this.limit);
+          this.offset = this.limit * this.currPage - this.limit;
 
-        this.items = [...data];
-      } catch (error) {
-        console.log(error);
-        this.$swal({
-          title: "Something when wrong!",
-          text: "Please ask administrator to fix the issue",
-          icon: "error",
-          timer: 3000,
-        });
+          this.items = [...data];
+        } catch (error) {
+          console.log(error);
+          this.$swal({
+            title: "Something when wrong!",
+            text: "Please ask administrator to fix the issue",
+            icon: "error",
+            timer: 3000,
+          });
+        }
       }
     },
     changePage(e) {

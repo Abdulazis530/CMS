@@ -48,12 +48,14 @@ export default {
       const {
         data: { data },
       } = await this.axios.get(URL);
+      let totalData=data.map(item=>item.frequency).reduce((acc,curr)=>acc+curr)
+      console.log(totalData)
       let newData = data.map((item) => [
         `letter ${item.letter}`,
-        item.frequency,
+        Number(item.frequency/totalData),
       ]);
 
-      this.chartData = [["letter", "frequency"], ...newData];
+      this.chartData = [["letter", "frequency(%)"], ...newData];
     },
     chartOptions() {
       if (!this.chartsLib) return null;
@@ -63,8 +65,14 @@ export default {
         width: 900,
         height: 500,
         legend: { position: "none" },
-        hAxis: { title: "Letter",format: "decimal" },
-        vAxis: { title: "Frequency" },
+        hAxis: { title: "Letter" },
+        vAxis: {
+          title: "Frequency (%)",
+          minValue: 0,
+          maxValue: 1000,
+    
+          
+        },
         animation: { duration: 1000, startup: true, easing: "in" },
       });
     },
