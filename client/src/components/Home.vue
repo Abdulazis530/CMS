@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navbar :isLoggedIn="isLoggedIn"></Navbar>
+    <Navbar :isLoggedIn="isLoggedIn" :whatPage="whatPage"></Navbar>
     <Jumbotron></Jumbotron>
     
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
@@ -55,6 +55,7 @@ export default {
     return {
       user: localStorage.getItem("email"),
       isLoggedIn: true,
+      whatPage:'home'
     };
   },
 };

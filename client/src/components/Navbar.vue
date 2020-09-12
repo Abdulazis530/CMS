@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-    <router-link to="/" class="navbar-brand text-black-50" >CMS</router-link>
+    <router-link to="/" class="navbar-brand text-black-50">CMS</router-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -15,18 +15,36 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto p-3 lead">
-        <li class="nav-item">
+        <li class="nav-item" :class="{active:whatPage==='home'}"> 
           <router-link to="/home" class="nav-link">Home</router-link>
         </li>
 
         <li class="nav-item">
-          <router-link to="/data" class="nav-link">Data</router-link>
+          <router-link to="/data" class="nav-link" :class="{active:whatPage==='data'}">Data</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/dataDate" class="nav-link">Data Date</router-link>
+          <router-link to="/dataDate" class="nav-link" :class="{active:whatPage==='dataDate'}">Data Date</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/maps" class="nav-link">Maps</router-link>
+          <router-link to="/maps" class="nav-link" :class="{active:whatPage==='dataMap'}">Maps</router-link>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >Chart</a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <router-link to="/line" class="dropdown-item" href="#">Line</router-link>
+            <router-link to="/pie" class="dropdown-item" href="#">Pie</router-link>
+            <router-link to="/bar" class="dropdown-item" href="#">Bar</router-link>
+            <router-link to="/map" class="dropdown-item" href="#">Maps</router-link>
+
+          </div>
         </li>
       </ul>
       <button
@@ -42,6 +60,7 @@
 export default {
   props: {
     isLoggedIn: Boolean,
+    whatPage:String
   },
   data() {
     return {

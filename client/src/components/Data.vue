@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navbar :isLoggedIn="isLoggedIn"></Navbar>
+    <Navbar :isLoggedIn="isLoggedIn" :whatPage="whatPage"></Navbar>
     <div class="container-card container">
       <div class="card-custom card mb-3">
         <div class="card-header">DATA BREAD</div>
@@ -242,6 +242,7 @@ export default {
 
   data() {
     return {
+      whatPage:'data',
       user: localStorage.getItem("email"),
       isLoggedIn: true,
       searchLetter: "",
