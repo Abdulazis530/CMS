@@ -25,6 +25,7 @@ router.get('/list', async (req, res) => {
     })
     res.status(200).json(response);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ response });
   }
 })
@@ -47,6 +48,7 @@ router.post('/register', async (req, res, next) => {
       response.token = token
       res.status(201).json(response)
     } catch (error) {
+      console.log(error)
       res.status(500).json(response)
     }
   } else {

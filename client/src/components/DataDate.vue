@@ -5,6 +5,7 @@
       <div class="card-custom card mb-2">
         <div class="card-header">DATA DATE BREAD</div>
         <div class="card-body text-dark">
+          <!-- START OF SEARCH BOX -->
           <div>
             <div class="card-header mt-2">SEARCH DATA DATE</div>
             <div class="flexCustom d-flex mb-3 flex-row">
@@ -42,6 +43,9 @@
               v-if="searchMode"
             >Stop Search</button>
           </div>
+          <!-- END OF SEARCH BOX -->
+
+          <!-- START OF ADD BOX -->
           <transition name="slide-fade">
             <div class="card-custom card mb-5" v-if="togle">
               <div class="card-body text-dark">
@@ -95,6 +99,9 @@
               </div>
             </div>
           </transition>
+          <!-- END OF SEARCH BOX -->
+
+          <!-- START OF TABLE BOX -->
           <table class="table table-striped font-weight-bold text-black-50">
             <thead>
               <tr>
@@ -170,7 +177,9 @@
               </tr>
             </tbody>
           </table>
+          <!-- END OF TABLE BOX -->
 
+          <!-- START OF PAGINATION  -->
           <div class="mt-5 mb-5 text-black-50">
             <template v-if="searchMode">
               <nav aria-label="...">
@@ -250,7 +259,9 @@
               </nav>
             </template>
           </div>
+          <!-- END OF PAGINATION -->
 
+          <!-- START OF BUTTON TOGLE ADD-->
           <div class="d-flex mt-5 mb-2 text-black-50 flex-row bd-highlight justify-content-center">
             <button
               type="button"
@@ -258,6 +269,8 @@
               @click="handleTogle"
             >Add Data</button>
           </div>
+          <!-- END OF BUTTON TOGLE ADD -->
+
         </div>
       </div>
     </div>
@@ -372,7 +385,7 @@ export default {
 
           if (!this.searchMode) {
             if (this.items.length > 5) {
-               if (this.currPage != this.totalPage) {
+              if (this.currPage != this.totalPage) {
                 this.currPage = this.totalPage;
                 this.$asyncComputed.loadData.update();
               } else {
@@ -381,7 +394,7 @@ export default {
             }
           } else {
             if (this.items.length > 5) {
-             if (this.currPageBrowse != this.totalPage) {
+              if (this.currPageBrowse != this.totalPage) {
                 this.currPageBrowse = this.totalPage;
                 this.handleSearch();
               } else {
@@ -518,7 +531,6 @@ export default {
       this.togle = !this.togle;
     },
     handleTogleEdit(e) {
-      console.log("clicked");
       e.preventDefault();
       const _id = e.target.value;
 
@@ -568,7 +580,6 @@ export default {
             `${this.url}search${queryPagination}`,
             filter
           );
-          console.log(data);
 
           this.totalPage = Math.ceil(totalData / this.limit);
           this.offset = this.limit * this.currPageBrowse - this.limit;
@@ -586,7 +597,6 @@ export default {
       }
     },
     handleFirstNLast(e) {
-  
       if (this.searchMode) {
         this.currPageBrowse = Number(e.target.value);
         this.handleSearch();
@@ -610,7 +620,7 @@ export default {
         this.currPage += 1;
       }
     },
-   handleReset() {
+    handleReset() {
       this.searchMode = false;
       this.searchLetter = "";
       this.searchFrequency = "";

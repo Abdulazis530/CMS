@@ -104,8 +104,6 @@ router.beforeEach(async (to, from, next) => {
         const { data: { valid } } = await axios.post('http://localhost:3000/api/users/check', {}, {
           headers
         })
-        console.log(valid)
-        console.log('here')
         //check if token still valid (in some case token could expire)
         if (!valid) {
           alert('Seem your token is invalid please login again')

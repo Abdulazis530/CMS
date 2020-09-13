@@ -53,7 +53,7 @@ export default {
       console.log(totalData);
       let newData = data.map((item) => [
         `letter ${item.letter}`,
-        Number(item.frequency / totalData)*100,
+        Number(item.frequency / totalData) * 100,
       ]);
 
       this.chartData = [["letter", "frequency(%)"], ...newData];

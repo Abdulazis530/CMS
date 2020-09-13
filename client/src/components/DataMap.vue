@@ -4,7 +4,10 @@
     <div class="container-card container">
       <div class="card-custom card mb-2">
         <div class="card-header">DATA MAPS BREAD</div>
+
         <div class="card-body text-dark">
+
+          <!-- START OF SEARCH BOX -->
           <div>
             <div class="card-header mt-2">SEARCH DATA MAPS</div>
             <div class="flexCustom d-flex mb-3 flex-row justify-content-center">
@@ -30,6 +33,9 @@
               v-if="searchMode"
             >Stop Search</button>
           </div>
+          <!-- END OF SEARCH BOX -->
+
+          <!-- START OF ADD BOX -->
           <transition name="slide-fade">
             <div class="card-custom card mb-5" v-if="togle">
               <div class="card-body text-dark">
@@ -95,6 +101,9 @@
               </div>
             </div>
           </transition>
+          <!-- END OF ADD BOX -->
+
+          <!-- START OF TABLE BOX -->
           <table class="table table-striped font-weight-bold text-black-50">
             <thead>
               <tr>
@@ -184,7 +193,9 @@
               </tr>
             </tbody>
           </table>
+          <!-- END OF TABLE BOX -->
 
+          <!-- START OF PAGINATION -->
           <div class="mt-5 mb-5 text-black-50">
             <template v-if="searchMode">
               <nav aria-label="...">
@@ -264,7 +275,9 @@
               </nav>
             </template>
           </div>
+          <!-- END OF PAGINATION -->
 
+          <!-- START OF BUTTON TOGLE ADD--->
           <div class="d-flex mt-5 mb-2 text-black-50 flex-row bd-highlight justify-content-center">
             <button
               type="button"
@@ -272,6 +285,8 @@
               @click="handleTogle"
             >Add Data</button>
           </div>
+          <!-- END OF BUTTON TOGLE ADD--->
+
         </div>
       </div>
     </div>
