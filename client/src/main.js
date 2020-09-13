@@ -7,8 +7,10 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import VueAxios from 'vue-axios'
 import AsyncComputed from 'vue-async-computed'
 import VueGoogleCharts from 'vue-google-charts'
+import VueMoment from 'vue-moment'
 
 
+Vue.use(VueMoment)
 Vue.use(VueGoogleCharts)
 Vue.use(AsyncComputed)
 Vue.config.productionTip = false

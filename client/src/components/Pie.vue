@@ -6,7 +6,7 @@
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3 justify-content-center">
-        <div class="card-header">PIE CHART</div>
+        <div class="card-header">PIE CHART OF LETTER FREQUENCY</div>
         <div class="card-body text-dark">
           <GChart  class="move-pie" type="PieChart" :data="chartData" :options="chartOptions"  :resizeDebounce="200" />
         </div>
