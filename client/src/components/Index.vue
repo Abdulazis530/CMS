@@ -3,7 +3,7 @@
     
     <Navbar :isLoggedIn="isLoggedIn"></Navbar>
 
-    <Jumbotron></Jumbotron>>
+    <Jumbotron></Jumbotron>
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3 justify-content-center w-75">

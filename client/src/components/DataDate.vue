@@ -175,57 +175,48 @@
             <template v-if="searchMode">
               <nav aria-label="...">
                 <ul class="pagination justify-content-center">
+                  <li class="page-item">
+                    <button class="page-link" aria-label="Previous" aria-hidden="true" value="1" @click="handleFirstNLast">&laquo;</button>
+                  </li>
                   <li class="page-item" :class="{disabled:currPageBrowse==1}">
                     <button class="page-link" @click="handlePrevious">Previous</button>
                   </li>
 
-                  <template>
-                    <li
-                      class="page-item"
-                      v-for="(page,index) of totalPage"
-                      :key="index"
-                      :class="{active:page==currPageBrowse}"
-                    >
-                      <button
-                        type="button"
-                        class="page-link"
-                        :value="page"
-                        @click="changePage"
-                      >{{index+1}}</button>
-                    </li>
-                  </template>
+                  <li class="page-item disabled"> 
+                    <span class="page-link inner-pagination-content">Page {{currPageBrowse}} of {{totalPage}}</span>
+                  </li>
 
                   <li class="page-item" :class="{disabled:currPageBrowse==totalPage}">
                     <button type="button" class="page-link" @click="handleNext">Next</button>
                   </li>
+                  <li class="page-item">
+                    <button class="page-link" aria-label="Next" aria-hidden="true" :value="totalPage" @click="handleFirstNLast">&raquo;</button>
+                  </li>
                 </ul>
               </nav>
             </template>
+
             <template v-else>
               <nav aria-label="...">
                 <ul class="pagination justify-content-center">
+                  <li class="page-item">
+                    <button class="page-link" aria-label="Previous" aria-hidden="true" value="1" @click="handleFirstNLast">&laquo;</button>
+                  </li>
+
                   <li class="page-item" :class="{disabled:currPage==1}">
                     <button class="page-link" @click="handlePrevious">Previous</button>
                   </li>
 
-                  <template>
-                    <li
-                      class="page-item"
-                      v-for="(page,index) of totalPage"
-                      :key="index"
-                      :class="{active:page==currPage}"
-                    >
-                      <button
-                        type="button"
-                        class="page-link"
-                        :value="page"
-                        @click="changePage"
-                      >{{index+1}}</button>
-                    </li>
-                  </template>
+                  <li class="page-item disabled"> 
+                    <span class="page-link inner-pagination-content">Page {{currPage}} of {{totalPage}}</span>
+                  </li>
 
                   <li class="page-item" :class="{disabled:currPage==totalPage}">
                     <button type="button" class="page-link" @click="handleNext">Next</button>
+                  </li>
+
+                  <li class="page-item">
+                    <button class="page-link" aria-label="Next" aria-hidden="true" :value="totalPage" @click="handleFirstNLast">&raquo;</button>
                   </li>
                 </ul>
               </nav>
@@ -275,6 +266,7 @@ export default {
       limit: 5,
       totalPage: null,
       offset: 0,
+      currentBundlePages: 1,
       searchMode: false,
     };
   },
@@ -518,7 +510,7 @@ export default {
         } else if (this.searchFrequency) {
           filter = { frequency: this.searchFrequency };
         }
-        console.log(filter);
+
         try {
           const queryPagination = `?page=${this.currPageBrowse}&limit=${this.limit}`;
 
@@ -545,11 +537,11 @@ export default {
         }
       }
     },
-    changePage(e) {
+    handleFirstNLast(e) {
+      console.log("click");
       if (this.searchMode) {
         this.currPageBrowse = Number(e.target.value);
         this.handleSearch();
-        console.log(this.currPageBrowse);
       } else {
         this.currPage = Number(e.target.value);
       }
@@ -570,11 +562,10 @@ export default {
         this.currPage += 1;
       }
     },
-   async handleReset() {
-     console.log('duh')
+    async handleReset() {
       this.searchMode = false;
-      this.searchLetter=""
-      this.searchFrequency=""
+      this.searchLetter = "";
+      this.searchFrequency = "";
       this.$asyncComputed.loadData.update();
     },
   },

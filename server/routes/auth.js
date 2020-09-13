@@ -59,18 +59,18 @@ router.post('/login', async (req, res, next) => {
 
   let response = { data: {}, token: null, message: "" }
   const { email, password } = req.body
- 
+
   try {
     const user = await User.findOne({ email })
     if (!user) {
       response.message = 'Email or password wrong!'
       return res.status(200).json(response)
     }
- 
+
     const check = await bcrypt.compare(password, user.password)
- 
+
     if (check) {
- 
+
       if (user.token) {
         response.data.email = email
         response.message = "login success"
@@ -105,7 +105,7 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.post('/check', async (req, res, next) => {
-  
+
   const token = req.header("Authorization")
 
   let response = {
@@ -141,9 +141,9 @@ router.get('/destroy', async (req, res, next) => {
       const decoded = jwt.verify(token, secret);
       if (!decoded) return res.status(500).json(response)
 
-      const user = await User.findOneAndUpdate({ email: decoded.email },{ token: undefined })
+      const user = await User.findOneAndUpdate({ email: decoded.email }, { token: undefined })
       if (!user) return res.status(500).json(response)
-      
+
       response.logout = true
       res.status(200).json(response)
 

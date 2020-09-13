@@ -167,57 +167,48 @@
             <template v-if="searchMode">
               <nav aria-label="...">
                 <ul class="pagination justify-content-center">
+
+                  <li class="page-item">
+                    <button class="page-link" aria-label="Previous" aria-hidden="true" value="1" @click="handleFirstNLast">&laquo;</button>
+                  </li>
+
                   <li class="page-item" :class="{disabled:currPageBrowse==1}">
                     <button class="page-link" @click="handlePrevious">Previous</button>
                   </li>
 
-                  <template>
-                    <li
-                      class="page-item"
-                      v-for="(page,index) of totalPage"
-                      :key="index"
-                      :class="{active:page==currPageBrowse}"
-                    >
-                      <button
-                        type="button"
-                        class="page-link"
-                        :value="page"
-                        @click="changePage"
-                      >{{index+1}}</button>
-                    </li>
-                  </template>
+               <li class="page-item disabled"> 
+                    <span class="page-link inner-pagination-content">Page {{currPageBrowse}} of {{totalPage}}</span>
+                  </li>
 
                   <li class="page-item" :class="{disabled:currPageBrowse==totalPage}">
                     <button type="button" class="page-link" @click="handleNext">Next</button>
                   </li>
+
+                   <li class="page-item">
+                    <button class="page-link" aria-label="Next" aria-hidden="true" :value="totalPage" @click="handleFirstNLast">&raquo;</button>
+                  </li>
+
                 </ul>
               </nav>
             </template>
             <template v-else>
               <nav aria-label="...">
                 <ul class="pagination justify-content-center">
+                  <li class="page-item">
+                    <button class="page-link" aria-label="Previous" aria-hidden="true" value="1" @click="handleFirstNLast">&laquo;</button>
+                  </li>
                   <li class="page-item" :class="{disabled:currPage==1}">
                     <button class="page-link" @click="handlePrevious">Previous</button>
                   </li>
 
-                  <template>
-                    <li
-                      class="page-item"
-                      v-for="(page,index) of totalPage"
-                      :key="index"
-                      :class="{active:page==currPage}"
-                    >
-                      <button
-                        type="button"
-                        class="page-link"
-                        :value="page"
-                        @click="changePage"
-                      >{{index+1}}</button>
-                    </li>
-                  </template>
-
+                  <li class="page-item disabled"> 
+                    <span class="page-link inner-pagination-content">Page {{currPage}} of {{totalPage}}</span>
+                  </li>
                   <li class="page-item" :class="{disabled:currPage==totalPage}">
                     <button type="button" class="page-link" @click="handleNext">Next</button>
+                  </li>
+                <li class="page-item">
+                    <button class="page-link" aria-label="Next" aria-hidden="true" :value="totalPage" @click="handleFirstNLast">&raquo;</button>
                   </li>
                 </ul>
               </nav>
@@ -225,11 +216,7 @@
           </div>
 
           <div class="d-flex mt-5 mb-5 text-black-50 flex-row bd-highlight justify-content-center">
-            <button
-              type="button"
-              class="btn-togle-add p-2 mb-2 text-white"
-              @click="handleTogle"
-            >Add Data</button>
+            <button type="button" class="btn-togle-add p-2 mb-2 text-white" @click="handleTogle">Add Data</button>
           </div>
         </div>
       </div>
@@ -551,11 +538,11 @@ export default {
         }
       }
     },
-    changePage(e) {
+    handleFirstNLast(e) {
+      console.log("click");
       if (this.searchMode) {
         this.currPageBrowse = Number(e.target.value);
         this.handleSearch();
-        console.log(this.currPageBrowse);
       } else {
         this.currPage = Number(e.target.value);
       }
