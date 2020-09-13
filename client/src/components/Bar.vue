@@ -10,7 +10,7 @@
         <div class="card-body text-dark">
           <GChart
             class="move-pie"
-            :settings="{packages: ['bar']}"
+            :settings="{ packages: ['bar'] }"
             :data="chartData"
             :options="chartOptions"
             :createChart="(el, google) => new google.charts.Bar(el)"
@@ -22,8 +22,7 @@
   </div>
 </template>
 
-
-<script >
+<script>
 import Jumbotron from "./Jumbotron";
 import Navbar from "./Navbar";
 import { GChart } from "vue-google-charts";
@@ -48,11 +47,13 @@ export default {
       const {
         data: { data },
       } = await this.axios.get(URL);
-      let totalData=data.map(item=>item.frequency).reduce((acc,curr)=>acc+curr)
-      console.log(totalData)
+      let totalData = data
+        .map((item) => item.frequency)
+        .reduce((acc, curr) => acc + curr);
+      console.log(totalData);
       let newData = data.map((item) => [
         `letter ${item.letter}`,
-        Number(item.frequency/totalData),
+        Number(item.frequency / totalData),
       ]);
 
       this.chartData = [["letter", "frequency(%)"], ...newData];
@@ -70,8 +71,6 @@ export default {
           title: "Frequency (%)",
           minValue: 0,
           maxValue: 1000,
-    
-          
         },
         animation: { duration: 1000, startup: true, easing: "in" },
       });

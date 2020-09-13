@@ -2,12 +2,12 @@
   <div>
     <Navbar :isLoggedIn="isLoggedIn" :whatPage="whatPage"></Navbar>
     <Jumbotron></Jumbotron>
-    
+
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3 justify-content-center w-75">
         <div class="card-header">
-          Welcome {{user}}
+          Welcome {{ user }}
           <br />
           <span class="lead text-dark-50 font-weight-bolder">Select Feature</span>
         </div>
@@ -50,12 +50,12 @@ import Jumbotron from "./Jumbotron";
 
 export default {
   name: "Home",
-  components: { Navbar,Jumbotron },
+  components: { Navbar, Jumbotron },
   data() {
     return {
       user: localStorage.getItem("email"),
       isLoggedIn: true,
-      whatPage:'home'
+      whatPage: "home",
     };
   },
 };
@@ -63,8 +63,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
 .card {
   background-color: rgba(225, 225, 255, 0.7);
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.6);

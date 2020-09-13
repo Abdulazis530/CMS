@@ -11,15 +11,36 @@ let response = {
 }
 // #1 FILTER localhost 3000/api/data/search
 router.post('/search', async (req, res, next) => {
+
+    let page = Number(req.query.page) || 1
+    let limit = Number(req.query.limit) || 0
+    let offset = page * limit - limit
+
     const { title } = req.body
-    let filter ={}
+    let filter = {}
+    const response = {
+        totalData: 0,
+        data: []
+    }
+
     try {
+        if (!title) return res.status(200).json(response)
         if (title) filter.title = new RegExp(title, "i")
-        const map = await Maps.find(filter)
-        let response = map.map(field => {
+        const data = await Maps.find(filter)
+        const totalData = data.length
+        const paginatedData = await Maps.find(filter).limit(limit).skip(offset)
+
+        response.totalData = totalData
+        paginatedData.forEach(field => {
             const { _id, title, lat, lng } = field
-            return { _id, title, lat, lng }
+            response.data.push({
+                _id,
+                title,
+                lat,
+                lng
+            })
         })
+
         res.status(200).json(response)
 
     } catch (error) {
@@ -31,12 +52,31 @@ router.post('/search', async (req, res, next) => {
 
 // #2 READ  localhost 3000/api/datadate
 router.get("/", async (req, res, next) => {
+    let page = Number(req.query.page) || 1
+    let limit = Number(req.query.limit) || 0
+
+    let offset = page * limit - limit
 
     try {
-        const map = await Maps.find()
-        let response = map.map(field => {
+        const data = await Maps.find()
+        const totalData = data.length
+
+        let response = {
+            totalData,
+            data: []
+        }
+
+        const paginatedData = await Maps.find().limit(limit).skip(offset)
+        paginatedData.map(field => {
             const { _id, title, lat, lng } = field
-            return { _id, title,lat,lng }
+            response.data.push({
+                _id,
+                title,
+                lat,
+                lng
+            })
+        
+
         })
         res.status(200).json(response)
     } catch (error) {
@@ -52,13 +92,13 @@ router.put("/:id", async (req, res, next) => {
     try {
         const map = await Maps.findByIdAndUpdate(
             _id,
-            { title, lat,lng },
+            { title, lat, lng },
             { new: true }
         )
         if (!map) return res.status(500).json(response)
         response.success = true
         response.message = "data have been updated"
-        response.data = { _id, title, lat,lng }
+        response.data = { _id, title, lat, lng }
         res.status(201).json(response)
     } catch (error) {
         console.log(error)
@@ -69,7 +109,7 @@ router.put("/:id", async (req, res, next) => {
 
 // #4 ADD  localhost 3000/api/data 
 router.post('/', async (req, res, next) => {
-    const { title, lat,lng } = req.body
+    const { title, lat, lng } = req.body
     try {
         const map = new Maps({
             title,
@@ -98,10 +138,10 @@ router.delete("/:id", async (req, res, next) => {
     try {
         const map = await Maps.findByIdAndRemove(_id)
         if (!map) return res.status(500).json(response)
-        const { title, lat,lng } = map
+        const { title, lat, lng } = map
         response.success = true
         response.message = "data have been deleted"
-        response.data = { _id, title, lat,lng }
+        response.data = { _id, title, lat, lng }
         res.status(200).json(response)
     } catch (error) {
         console.log(error)
@@ -116,10 +156,10 @@ router.get("/:id", async (req, res, next) => {
     try {
         const map = await Maps.findOne({ _id })
         if (!map) return res.status(400).json(response)
-        const { title, lat,lng } = map
+        const { title, lat, lng } = map
         response.success = true
         response.message = "data found"
-        response.data = { _id, title, lat,lng }
+        response.data = { _id, title, lat, lng }
         res.status(200).json(response)
     } catch (error) {
         console.log(error)
