@@ -50,8 +50,10 @@ export default {
       } = await this.axios.get(URL);
 
       let newData = data.map((item) => [new Date(item.letter), item.frequency]);
-
-      this.chartData = [["letter", "frequency"], ...newData];
+ 
+    
+      this.chartData = [["date", "frequency"], ...newData];
+      console.log(this.chartData)
     },
     chartOptions() {
       if (!this.chartsLib) return null;

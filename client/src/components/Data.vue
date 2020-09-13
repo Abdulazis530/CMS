@@ -167,27 +167,39 @@
             <template v-if="searchMode">
               <nav aria-label="...">
                 <ul class="pagination justify-content-center">
-
                   <li class="page-item">
-                    <button class="page-link" aria-label="Previous" aria-hidden="true" value="1" @click="handleFirstNLast">&laquo;</button>
+                    <button
+                      class="page-link"
+                      aria-label="Previous"
+                      aria-hidden="true"
+                      value="1"
+                      @click="handleFirstNLast"
+                    >&laquo;</button>
                   </li>
 
                   <li class="page-item" :class="{disabled:currPageBrowse==1}">
                     <button class="page-link" @click="handlePrevious">Previous</button>
                   </li>
 
-               <li class="page-item disabled"> 
-                    <span class="page-link inner-pagination-content">Page {{currPageBrowse}} of {{totalPage}}</span>
+                  <li class="page-item disabled">
+                    <span
+                      class="page-link inner-pagination-content"
+                    >Page {{currPageBrowse}} of {{totalPage}}</span>
                   </li>
 
                   <li class="page-item" :class="{disabled:currPageBrowse==totalPage}">
                     <button type="button" class="page-link" @click="handleNext">Next</button>
                   </li>
 
-                   <li class="page-item">
-                    <button class="page-link" aria-label="Next" aria-hidden="true" :value="totalPage" @click="handleFirstNLast">&raquo;</button>
+                  <li class="page-item">
+                    <button
+                      class="page-link"
+                      aria-label="Next"
+                      aria-hidden="true"
+                      :value="totalPage"
+                      @click="handleFirstNLast"
+                    >&raquo;</button>
                   </li>
-
                 </ul>
               </nav>
             </template>
@@ -195,20 +207,34 @@
               <nav aria-label="...">
                 <ul class="pagination justify-content-center">
                   <li class="page-item">
-                    <button class="page-link" aria-label="Previous" aria-hidden="true" value="1" @click="handleFirstNLast">&laquo;</button>
+                    <button
+                      class="page-link"
+                      aria-label="Previous"
+                      aria-hidden="true"
+                      value="1"
+                      @click="handleFirstNLast"
+                    >&laquo;</button>
                   </li>
                   <li class="page-item" :class="{disabled:currPage==1}">
                     <button class="page-link" @click="handlePrevious">Previous</button>
                   </li>
 
-                  <li class="page-item disabled"> 
-                    <span class="page-link inner-pagination-content">Page {{currPage}} of {{totalPage}}</span>
+                  <li class="page-item disabled">
+                    <span
+                      class="page-link inner-pagination-content"
+                    >Page {{currPage}} of {{totalPage}}</span>
                   </li>
                   <li class="page-item" :class="{disabled:currPage==totalPage}">
                     <button type="button" class="page-link" @click="handleNext">Next</button>
                   </li>
-                <li class="page-item">
-                    <button class="page-link" aria-label="Next" aria-hidden="true" :value="totalPage" @click="handleFirstNLast">&raquo;</button>
+                  <li class="page-item">
+                    <button
+                      class="page-link"
+                      aria-label="Next"
+                      aria-hidden="true"
+                      :value="totalPage"
+                      @click="handleFirstNLast"
+                    >&raquo;</button>
                   </li>
                 </ul>
               </nav>
@@ -216,7 +242,11 @@
           </div>
 
           <div class="d-flex mt-5 mb-5 text-black-50 flex-row bd-highlight justify-content-center">
-            <button type="button" class="btn-togle-add p-2 mb-2 text-white" @click="handleTogle">Add Data</button>
+            <button
+              type="button"
+              class="btn-togle-add p-2 mb-2 text-white"
+              @click="handleTogle"
+            >Add Data</button>
           </div>
         </div>
       </div>
@@ -302,7 +332,8 @@ export default {
   methods: {
     async handleSubmitNewData(e) {
       e.preventDefault();
-
+      this.errorLetter = "";
+      this.errorFrequency = "";
       try {
         //VALIDATION INPUT
 
@@ -338,11 +369,21 @@ export default {
 
           if (!this.searchMode) {
             if (this.items.length > 5) {
-              this.$asyncComputed.loadData.update();
+              if (this.currPage != this.totalPage) {
+                this.currPage = this.totalPage;
+                this.$asyncComputed.loadData.update();
+              } else {
+                this.$asyncComputed.loadData.update();
+              }
             }
           } else {
             if (this.items.length > 5) {
-              this.handleSearch();
+              if (this.currPageBrowse != this.totalPage) {
+                this.currPageBrowse = this.totalPage;
+                this.handleSearch();
+              } else {
+                this.handleSearch();
+              }
             }
           }
 
@@ -382,11 +423,21 @@ export default {
 
           if (!this.searchMode) {
             if (this.items.length < 5) {
-              this.$asyncComputed.loadData.update();
+              if (this.items.length < 1 && this.currPage != 1) {
+                this.currPage -= 1;
+                this.$asyncComputed.loadData.update();
+              } else {
+                this.$asyncComputed.loadData.update();
+              }
             }
           } else {
             if (this.items.length < 5) {
-              this.handleSearch();
+              if (this.items.length < 1 && this.currPageBrowse != 1) {
+                this.currPageBrowse -= 1;
+                this.handleSearch();
+              } else {
+                this.handleSearch();
+              }
             }
           }
 
@@ -524,7 +575,7 @@ export default {
           console.log(data);
 
           this.totalPage = Math.ceil(totalData / this.limit);
-          this.offset = this.limit * this.currPage - this.limit;
+          this.offset = this.limit * this.currPageBrowse - this.limit;
 
           this.items = [...data];
         } catch (error) {

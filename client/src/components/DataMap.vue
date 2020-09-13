@@ -157,7 +157,7 @@
                   <td>
                     <div class="form-row">
                       <input
-                        id="updateLatitude"
+                        id="updateLongitude"
                         type="text"
                         class="form-control"
                         :value="item.lng"
@@ -288,20 +288,21 @@ export default {
       whatPage: "dataMap",
       user: localStorage.getItem("email"),
       isLoggedIn: true,
-      searchTittle: "",
+      searchTitle: "",
       searchLatitude: "",
       errorTitle: "",
       errorLatitude: "",
       errorLongitude: "",
       errorUpdateTitle: "",
       errorUpdateLatitude: "",
+      errorUpdateLongitude: "",
       errorSearchTitle: "",
-      errorSearchLatitude: "",
       newTitle: "",
       newLatitude: "",
       newLongitude: "",
       updateTitle: "",
       updateLatitude: "",
+      updateLongitude: "",
       url: "http://localhost:3000/api/maps/",
       togle: false,
       items: null,
@@ -403,11 +404,21 @@ export default {
 
           if (!this.searchMode) {
             if (this.items.length > 5) {
-              this.$asyncComputed.loadData.update();
+              if (this.currPage != this.totalPage) {
+                this.currPage = this.totalPage;
+                this.$asyncComputed.loadData.update();
+              } else {
+                this.$asyncComputed.loadData.update();
+              }
             }
           } else {
             if (this.items.length > 5) {
-              this.handleSearch();
+              if (this.currPageBrowse != this.totalPage) {
+                this.currPageBrowse = this.totalPage;
+                this.handleSearch();
+              } else {
+                this.handleSearch();
+              }
             }
           }
 
@@ -452,20 +463,21 @@ export default {
 
           if (!this.searchMode) {
             if (this.items.length < 5) {
-              if (this.items.length < 1) {
+              if (this.items.length < 1 && this.currPage != 1) {
                 this.currPage -= 1;
                 this.$asyncComputed.loadData.update();
+              } else {
+                this.$asyncComputed.loadData.update();
               }
-
-              this.$asyncComputed.loadData.update();
             }
           } else {
             if (this.items.length < 5) {
-              if (this.items.length < 1) {
+              if (this.items.length < 1 && this.currPageBrowse != 1) {
                 this.currPageBrowse -= 1;
                 this.handleSearch();
+              } else {
+                this.handleSearch();
               }
-              this.handleSearch();
             }
           }
 
@@ -484,34 +496,77 @@ export default {
         });
       }
     },
+    handleTogleEdit(e) {
+      e.preventDefault();
+      const _id = e.target.value;
+
+      this.updateTitle = "";
+      this.updateLatitude = "";
+      this.updateLongitude = "";
+
+      this.errorUpdateTitle = "";
+      this.errorUpdateLatitude = "";
+      this.errorUpdateLongitude = "";
+      this.items = this.items.map((item) => {
+        if (item._id === _id) {
+          item.isEdit = !item.isEdit;
+        }
+        return item;
+      });
+    },
     async handleEdit(e) {
+      this.errorUpdateTitle = "";
+      this.errorUpdateLatitude = "";
+      this.errorUpdateLongitude = "";
       e.preventDefault();
       const _id = e.target.value;
       this.updateTitle = document.querySelector("#updateTitle").value;
       this.updateLatitude = document.querySelector("#updateLatitude").value;
+      this.updateLongitude = document.querySelector("#updateLongitude").value;
 
       try {
-        if (!this.updateLatitude && !this.updateTitle) {
-          this.errorUpdateTitle = "Input letter cannot empty!";
+        if (
+          !this.updateLatitude &&
+          !this.updateTitle &&
+          !this.updateLongitude
+        ) {
+          this.errorUpdateTitle = "Input Title cannot empty!";
           this.errorUpdateLatitude = "Input Latitude cannot empty!";
+          this.errorUpdateLongitude = "Input Longitude cannot empty!";
         } else if (!this.updateTitle) {
-          this.errorUpdateTitle = "Input letter cannot empty!";
+          this.errorUpdateTitle = "Input Title cannot empty!";
         } else if (!this.updateLatitude) {
           this.errorUpdateLatitude = "Input Latitude cannot empty!";
+        } else if (!this.updateLongitude) {
+          this.errorUpdateLongitude = "Input Longitude cannot empty!";
+        } else if (
+          !isNaN(this.updateTitle) &&
+          isNaN(this.updateLatitude) &&
+          isNaN(this.updateLongitude)
+        ) {
+          this.errorUpdateTitle = "Input should be string!";
+          this.errorUpdateLatitude = "input should be number!";
+          this.errorUpdateLongitude = "input should be number!";
         } else if (isNaN(this.updateLatitude)) {
           this.errorUpdateLatitude = "input should be number!";
+        } else if (isNaN(this.updateLongitude)) {
+          this.errorUpdateLongitude = "input should be number!";
+        } else if (!isNaN(this.updateTitle)) {
+          this.errorUpdateTitle = "Input should be string!";
         } else {
           const {
             data: { message, data },
           } = await this.axios.put(`${this.url}${_id}`, {
-            letter: this.updateTitle,
-            latitude: this.updateLatitude,
+            title: this.updateTitle,
+            lat: this.updateLatitude,
+            lng: this.updateLongitude,
           });
 
           this.items = this.items.map((item) => {
             if (item._id === _id) {
-              item.letter = data.letter;
-              item.latitude = data.latitude;
+              item.title = data.title;
+              item.lat = data.lat;
+              item.lng = data.lng;
               item.isEdit = !item.isEdit;
             }
             return item;
@@ -524,6 +579,7 @@ export default {
           });
           this.errorUpdateTitle = "";
           this.errorUpdateLatitude = "";
+          this.errorUpdateLongitude = "";
         }
       } catch (error) {
         console.log(error);
@@ -543,46 +599,22 @@ export default {
       this.errorLongitude = "";
       this.togle = !this.togle;
     },
-    handleTogleEdit(e) {
-      console.log("clicked");
-      e.preventDefault();
-      const _id = e.target.value;
 
-      this.updateTitle = "";
-      this.updateLatitude = "";
-
-      this.errorUpdateTitle = " ";
-      this.errorUpdateLatitude = " ";
-      this.items = this.items.map((item) => {
-        if (item._id === _id) {
-          item.isEdit = !item.isEdit;
-        }
-        return item;
-      });
-    },
     async handleSearch() {
       this.searchMode = true;
       let filter = {};
 
-      if (!this.searchLatitude && !this.searchTittle) {
+      if (!this.searchTittle) {
         this.errorSearchTitle = "";
-        this.errorSearchLatitude = "";
         this.searchMode = false;
         this.currPageBrowse = 1;
-      } else if (this.searchLatitude != "" && isNaN(this.searchLatitude)) {
-        this.errorSearchLatitude = "input should be number!";
+      } else if (!isNaN(this.searchTitle)) {
+        this.errorSearchTitle = "input should be number!";
       } else {
         this.errorSearchTitle = "";
-        this.errorSearchLatitude = "";
-        if (this.searchLatitude && this.searchTittle) {
-          filter = {
-            letter: this.searchTittle,
-            latitude: this.searchLatitude,
-          };
-        } else if (this.searchTittle) {
+
+        if (this.searchTittle) {
           filter = { letter: this.searchTittle };
-        } else if (this.searchLatitude) {
-          filter = { latitude: this.searchLatitude };
         }
 
         try {
@@ -594,10 +626,9 @@ export default {
             `${this.url}search${queryPagination}`,
             filter
           );
-          console.log(data);
 
           this.totalPage = Math.ceil(totalData / this.limit);
-          this.offset = this.limit * this.currPage - this.limit;
+          this.offset = this.limit * this.currPageBrowse - this.limit;
 
           this.items = [...data];
         } catch (error) {
