@@ -10,17 +10,9 @@
             <div class="flexCustom d-flex mb-3 flex-row justify-content-center">
               <div class="p-4 w-100">
                 <label for="inputTitle" class="text-white font-weight-bold">Title</label>
-                <input
-                  class="form-control form-control-lg"
-                  type="text"
-                  placeholder="Title of Map"
-                  id="inputTitle"
-                  v-model="searchTitle"
-                  required
-                />
+                <input class="form-control form-control-lg" type="text" placeholder="Title of Map" id="inputTitle" v-model="searchTitle" required/>
                 <p class="error" v-if="errorSearchTitle.length>0">{{errorSearchTitle}}</p>
               </div>
-
             </div>
           </div>
           <div class="d-flex mb-2 text-black-50 flex-row bd-highlight justify-content-center">
@@ -62,16 +54,16 @@
                       <p class="error" v-if="errorLatitude.length>0">{{errorLatitude}}</p>
                     </div>
                     <div class="p-3 w-50">
-                      <label for="inputNewLatitude" class="text-white font-weight-bold">Latitude</label>
+                      <label for="inputNewLatitude" class="text-white font-weight-bold">longitude</label>
                       <input
                         class="form-control form-control-lg"
                         type="text"
-                        placeholder="Add new latitude here"
+                        placeholder="Add new longitude here"
                         id="inputNewLatitude"
-                        v-model="newLatitude"
+                        v-model="newLongitude"
                         required
                       />
-                      <p class="error" v-if="errorLatitude.length>0">{{errorLatitude}}</p>
+                      <p class="error" v-if="errorLongitude.length>0">{{errorLongitude}}</p>
                     </div>
                   </div>
                 </div>
@@ -110,9 +102,9 @@
               <tr v-for="(item,index) of items " :key="item._id">
                 <template v-if="!item.isEdit">
                   <th scope="row">{{offset+index+1}}</th>
-                  <td>{{item.letter}}</td>
-                  <td>{{item.latitude}}</td>
-                  <td>{{item.latitude}}</td>
+                  <td>{{item.title}}</td>
+                  <td>{{item.lat}}</td>
+                  <td>{{item.lng}}</td>
                   <td class="d-flex justify-content-center">
                     <button
                       type="button"
@@ -137,7 +129,7 @@
                         id="updateTitle"
                         type="date  "
                         class="form-control"
-                        :value="item.letter"
+                        :value="item.title"
                         required
                       />
                     </div>
@@ -149,7 +141,7 @@
                         id="updateLatitude"
                         type="text"
                         class="form-control"
-                        :value="item.latitude"
+                        :value="item.lat"
                         required
                       />
                     </div>
@@ -161,11 +153,11 @@
                         id="updateLatitude"
                         type="text"
                         class="form-control"
-                        :value="item.latitude"
+                        :value="item.lng"
                         required
                       />
                     </div>
-                    <p class="error" v-if="errorUpdateLatitude.length>0">{{errorUpdateLatitude}}</p>
+                    <p class="error" v-if="errorUpdateLongitude.length>0">{{errorUpdateLongitude}}</p>
                   </td>
                   <td>
                     <button
@@ -293,15 +285,17 @@ export default {
       searchLatitude: "",
       errorTitle: "",
       errorLatitude: "",
+      errorLongitude:"",
       errorUpdateTitle: "",
       errorUpdateLatitude: "",
       errorSearchTitle: "",
       errorSearchLatitude: "",
       newTitle: "",
       newLatitude: "",
+      newLongitude: "",
       updateTitle: "",
       updateLatitude: "",
-      url: "http://localhost:3000/api/datadate/",
+      url: "http://localhost:3000/api/maps/",
       togle: false,
       items: null,
       currPage: 1,
@@ -316,15 +310,12 @@ export default {
   watch: {
     searchTittle: function () {
       this.handleSearch();
-    },
-    searchLatitude: function () {
-      this.handleSearch();
-    },
+    }
   },
   asyncComputed: {
     async loadData() {
       try {
-        if (!this.searchTittle && !this.searchLatitude) {
+        if (!this.searchTittle ) {
           this.searchMode = false;
           const queryPagination = `?page=${this.currPage}&limit=${this.limit}`;
 
@@ -356,25 +347,41 @@ export default {
   methods: {
     async handleSubmitNewData(e) {
       e.preventDefault();
-
+          this.errorTitle = "";
+          this.errorLatitude = "";
+          this.errorLongitude = "";
       try {
         //VALIDATION INPUT
 
-        if (!this.newLatitude && !this.newTitle) {
+        if (!this.newLatitude && !this.newTitle  && !this.newLongitude) {
           this.errorTitle = "Input Title cannot empty!";
           this.errorLatitude = "Input Latitude cannot empty!";
+          this.errorLongitude = "Input Longitude cannot empty!";
         } else if (!this.newTitle) {
           this.errorTitle = "Input Title cannot empty!";
         } else if (!this.newLatitude) {
           this.errorLatitude = "Input Latitude cannot empty!";
-        } else if (isNaN(this.newLatitude)) {
+        }else if (!this.newLongitude) {
+          this.errorLongitude = "Input Longitude cannot empty!";
+        } else if (!isNaN(this.newTitle) && isNaN(this.newLatitude)&& isNaN(this.newLongitude)) {
+          this.errorTitle = "Input should be string!";
           this.errorLatitude = "input should be number!";
-        } else {
+          this.errorLongitude = "input should be number!";
+        }
+        else if (isNaN(this.newLatitude)) {
+          this.errorLatitude = "input should be number!";
+        }else if (isNaN(this.newLongitude)) {
+          this.errorLongitude = "input should be number!";
+        }  else if (!isNaN(this.newTitle)) {
+          this.errorTitle = "Input should be string!";
+        }
+        else {
           const {
             data: { message, data },
           } = await this.axios.post(this.url, {
-            letter: this.newTitle,
-            latitude: this.newLatitude,
+            title: this.newTitle,
+            lat: this.newLatitude,
+            lng: this.newLongitude,
           });
           this.$swal({
             icon: "success",
@@ -397,8 +404,10 @@ export default {
 
           this.newTitle = "";
           this.newLatitude = "";
+          this.newLongitude = "";
           this.errorTitle = "";
           this.errorLatitude = "";
+          this.errorLongitude = "";
         }
       } catch (error) {
         console.log(error);
@@ -508,8 +517,9 @@ export default {
     handleTogle() {
       this.newTitle = "";
       this.newLatitude = "";
-      this.errorTitle = " ";
-      this.errorLatitude = " ";
+      this.errorTitle = "";
+      this.errorLatitude = "";
+      this.errorLongitude = "";
       this.togle = !this.togle;
     },
     handleTogleEdit(e) {
