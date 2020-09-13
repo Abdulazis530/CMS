@@ -10,7 +10,14 @@
             <div class="flexCustom d-flex mb-3 flex-row justify-content-center">
               <div class="p-4 w-100">
                 <label for="inputTitle" class="text-white font-weight-bold">Title</label>
-                <input class="form-control form-control-lg" type="text" placeholder="Title of Map" id="inputTitle" v-model="searchTitle" required/>
+                <input
+                  class="form-control form-control-lg"
+                  type="text"
+                  placeholder="Title of Map"
+                  id="inputTitle"
+                  v-model="searchTitle"
+                  required
+                />
                 <p class="error" v-if="errorSearchTitle.length>0">{{errorSearchTitle}}</p>
               </div>
             </div>
@@ -285,7 +292,7 @@ export default {
       searchLatitude: "",
       errorTitle: "",
       errorLatitude: "",
-      errorLongitude:"",
+      errorLongitude: "",
       errorUpdateTitle: "",
       errorUpdateLatitude: "",
       errorSearchTitle: "",
@@ -310,12 +317,12 @@ export default {
   watch: {
     searchTittle: function () {
       this.handleSearch();
-    }
+    },
   },
   asyncComputed: {
     async loadData() {
       try {
-        if (!this.searchTittle ) {
+        if (!this.searchTittle) {
           this.searchMode = false;
           const queryPagination = `?page=${this.currPage}&limit=${this.limit}`;
 
@@ -347,13 +354,13 @@ export default {
   methods: {
     async handleSubmitNewData(e) {
       e.preventDefault();
-          this.errorTitle = "";
-          this.errorLatitude = "";
-          this.errorLongitude = "";
+      this.errorTitle = "";
+      this.errorLatitude = "";
+      this.errorLongitude = "";
       try {
         //VALIDATION INPUT
 
-        if (!this.newLatitude && !this.newTitle  && !this.newLongitude) {
+        if (!this.newLatitude && !this.newTitle && !this.newLongitude) {
           this.errorTitle = "Input Title cannot empty!";
           this.errorLatitude = "Input Latitude cannot empty!";
           this.errorLongitude = "Input Longitude cannot empty!";
@@ -361,21 +368,23 @@ export default {
           this.errorTitle = "Input Title cannot empty!";
         } else if (!this.newLatitude) {
           this.errorLatitude = "Input Latitude cannot empty!";
-        }else if (!this.newLongitude) {
+        } else if (!this.newLongitude) {
           this.errorLongitude = "Input Longitude cannot empty!";
-        } else if (!isNaN(this.newTitle) && isNaN(this.newLatitude)&& isNaN(this.newLongitude)) {
+        } else if (
+          !isNaN(this.newTitle) &&
+          isNaN(this.newLatitude) &&
+          isNaN(this.newLongitude)
+        ) {
           this.errorTitle = "Input should be string!";
           this.errorLatitude = "input should be number!";
           this.errorLongitude = "input should be number!";
-        }
-        else if (isNaN(this.newLatitude)) {
+        } else if (isNaN(this.newLatitude)) {
           this.errorLatitude = "input should be number!";
-        }else if (isNaN(this.newLongitude)) {
+        } else if (isNaN(this.newLongitude)) {
           this.errorLongitude = "input should be number!";
-        }  else if (!isNaN(this.newTitle)) {
+        } else if (!isNaN(this.newTitle)) {
           this.errorTitle = "Input should be string!";
-        }
-        else {
+        } else {
           const {
             data: { message, data },
           } = await this.axios.post(this.url, {
@@ -422,6 +431,9 @@ export default {
     async handleDelete(e) {
       e.preventDefault();
       const _id = e.target.value;
+      this.errorTitle = "";
+      this.errorLatitude = "";
+      this.errorLongitude = "";
 
       try {
         const confirmationDelete = await this.$swal({
@@ -440,10 +452,19 @@ export default {
 
           if (!this.searchMode) {
             if (this.items.length < 5) {
+              if (this.items.length < 1) {
+                this.currPage -= 1;
+                this.$asyncComputed.loadData.update();
+              }
+
               this.$asyncComputed.loadData.update();
             }
           } else {
             if (this.items.length < 5) {
+              if (this.items.length < 1) {
+                this.currPageBrowse -= 1;
+                this.handleSearch();
+              }
               this.handleSearch();
             }
           }
