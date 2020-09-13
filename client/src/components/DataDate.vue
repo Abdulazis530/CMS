@@ -294,7 +294,6 @@ export default {
       limit: 5,
       totalPage: null,
       offset: 0,
-      currentBundlePages: 1,
       searchMode: false,
     };
   },
@@ -587,7 +586,7 @@ export default {
       }
     },
     handleFirstNLast(e) {
-      console.log("click");
+  
       if (this.searchMode) {
         this.currPageBrowse = Number(e.target.value);
         this.handleSearch();
@@ -611,7 +610,7 @@ export default {
         this.currPage += 1;
       }
     },
-    async handleReset() {
+   handleReset() {
       this.searchMode = false;
       this.searchLetter = "";
       this.searchFrequency = "";

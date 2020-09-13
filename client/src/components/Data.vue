@@ -34,6 +34,14 @@
               </div>
             </div>
           </div>
+          <div class="d-flex mb-2 text-black-50 flex-row bd-highlight justify-content-center">
+            <button
+              type="button"
+              class="btn-togle-add p-2 mb-2 text-white"
+              @click="handleReset"
+              v-if="searchMode"
+            >Stop Search</button>
+          </div>
           <transition name="slide-fade">
             <div class="card-custom card mb-5" v-if="togle">
               <div class="card-body text-dark">
@@ -314,8 +322,6 @@ export default {
             return item;
           }));
         } else {
-          console.log("here");
-          console.log(this.items);
           return this.items;
         }
       } catch (error) {
@@ -590,7 +596,6 @@ export default {
       }
     },
     handleFirstNLast(e) {
-      console.log("click");
       if (this.searchMode) {
         this.currPageBrowse = Number(e.target.value);
         this.handleSearch();
@@ -613,6 +618,12 @@ export default {
       } else {
         this.currPage += 1;
       }
+    },
+    handleReset() {
+      this.searchMode = false;
+      this.searchLetter = "";
+      this.searchFrequency = "";
+      this.$asyncComputed.loadData.update();
     },
   },
 };

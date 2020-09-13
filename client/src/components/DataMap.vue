@@ -41,7 +41,7 @@
                       <input
                         class="form-control form-control-lg"
                         type="text"
-                        placeholder="Add new letter here"
+                        placeholder="Add title here"
                         id="inputNewTitle"
                         v-model="newTitle"
                         required
@@ -316,14 +316,14 @@ export default {
     };
   },
   watch: {
-    searchTittle: function () {
+    searchTitle: function () {
       this.handleSearch();
     },
   },
   asyncComputed: {
     async loadData() {
       try {
-        if (!this.searchTittle) {
+        if (!this.searchTitle) {
           this.searchMode = false;
           const queryPagination = `?page=${this.currPage}&limit=${this.limit}`;
 
@@ -604,17 +604,17 @@ export default {
       this.searchMode = true;
       let filter = {};
 
-      if (!this.searchTittle) {
+      if (!this.searchTitle) {
         this.errorSearchTitle = "";
         this.searchMode = false;
         this.currPageBrowse = 1;
       } else if (!isNaN(this.searchTitle)) {
-        this.errorSearchTitle = "input should be number!";
+        this.errorSearchTitle = "input should be string!";
       } else {
         this.errorSearchTitle = "";
 
-        if (this.searchTittle) {
-          filter = { letter: this.searchTittle };
+        if (this.searchTitle) {
+          filter = { title: this.searchTitle };
         }
 
         try {
@@ -669,7 +669,7 @@ export default {
     },
     async handleReset() {
       this.searchMode = false;
-      this.searchTittle = "";
+      this.searchTitle = "";
       this.searchLatitude = "";
       this.$asyncComputed.loadData.update();
     },
