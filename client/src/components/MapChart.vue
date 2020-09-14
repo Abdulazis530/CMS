@@ -8,12 +8,7 @@
       <div class="card mb-3 justify-content-center pb-5">
         <div class="card-header">LINE CHART OF DATA DATE FREQUENCY</div>
         <div class="card-body text-dark p-5">
-          <GChart
-            :settings="{packages: ['corechart','map'], mapsApiKey:'AIzaSyDemSB1MKHpdMDcMFXbqr9F1CJDVDo8UTE'}"
-            type="Map"
-            :data="chartData"
-            :options="chartOptions"
-          />
+          <div id="map-chart"></div>
         </div>
       </div>
     </div>
@@ -24,31 +19,27 @@
 <script >
 import Jumbotron from "./Jumbotron";
 import Navbar from "./Navbar";
-import { GChart } from "vue-google-charts";
 
 export default {
   name: "Maps",
   components: {
     Jumbotron,
     Navbar,
-    GChart,
   },
   data() {
     return {
       isLoggedIn: false,
       chartData: [],
-      
-      chartOptions: {
-        showTooltip: true,
-        showInfoWindow: true,
-        zoomLevel: 12,
-        fullscreenControl:false
-      },
-      
     };
   },
   asyncComputed: {
     async loadData() {
+      google.charts.load("current", {
+        packagaes: ["map"],
+        mapsApiKey: "AIzaSyDemSB1MKHpdMDcMFXbqr9F1CJDVDo8UTE'",
+      });
+
+      google.charts.setOnLoadCallback(drawChart);
       const URL = "http://localhost:3000/api/maps/";
       const {
         data: { data },
@@ -56,8 +47,25 @@ export default {
 
       let newData = data.map((item) => [item.lat, item.lng, item.title]);
 
-      this.chartData = [["lat", "Long", "Name"], ...newData];
-      console.log(this.chartData);
+      let modifiedNewData = [["lat", "Long", "Name"], ...newData];
+      const mapedData = google.visualization.arrayToDataTable(modifiedNewData);
+      const map = google.visualization.Map(
+        document.querySelector("#map-chart")
+      );
+      const options = {
+        mapType: "styledMap",
+        showTooltip: true,
+        showInfoWindow: true,
+        zoomLevel: 12,
+        useMapTypeControl: true,
+        mapTypeIds: ["styledMap", "redEverything", "imBlue"],
+        maps: {
+          styledMap: {
+            name: "Styled Map",
+          },
+        },
+      };
+      map.draw(mapedData, options);
     },
   },
 };

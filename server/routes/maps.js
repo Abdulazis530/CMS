@@ -48,7 +48,7 @@ router.post('/search', async (req, res, next) => {
 
 });
 
-// #2 READ  localhost 3000/api/datadate
+// #2 READ  localhost 3000/api/maps
 router.get("/", async (req, res, next) => {
     try {
         let page = Number(req.query.page) || 1
