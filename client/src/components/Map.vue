@@ -6,7 +6,7 @@
     <!-- START OF SELECTION FEATURE(LINE,PIE,BAR,MAPS) -->
     <div class="container-card container">
       <div class="card mb-3 justify-content-center pb-5">
-        <div class="card-header">LINE CHART OF DATA DATE FREQUENCY</div>
+        <div class="card-header">MAPS</div>
         <div class="card-body text-dark p-5">
           <GChart
             :settings="{packages: ['corechart','map'], mapsApiKey:'AIzaSyDemSB1MKHpdMDcMFXbqr9F1CJDVDo8UTE'}"
